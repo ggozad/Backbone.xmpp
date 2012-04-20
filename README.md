@@ -14,20 +14,23 @@ In order for a collection to use the storage, override its `sync()` function and
         var MyCollection = Backbone.Collection.extend({
             sync: Backbone.xmppSync,
             model: MyModel,
-            initialize: function () {
-                this.node = new PubSubNodeStorage('mymodels'),
-            },
             ...
         });
 
+        var mycollection = new MyCollection();
+        mycollection.node = new PubSubNodeStorage('mymodels'),
+
 will use the `mymodels` node on your XMPP PubSub server.
 
-For models, you do not need to specify the node, i.e. the following is sufficient:
+For models, you do not need to specify the node (you can though), i.e. the following is sufficient:
 
         var MyModel = Backbone.Model.extend({
             sync: Backbone.xmppSync,
             ...
         });
+
+        var mymodel = new MyModel();
+        mycollection.add(mymodel);
 
 That's it! Note that the storage will not take care of creating, configuring the node, or managing subscriptions. This should be typically done on the server. However, if you wish to do so in your clients, you can by means of utilising the bundled PubSub plugin for [Strophe].
 
