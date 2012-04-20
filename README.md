@@ -18,7 +18,7 @@ In order for a collection to use the storage, override its `sync()` function and
         });
 
         var mycollection = new MyCollection();
-        mycollection.node = new PubSubNodeStorage('mymodels'),
+        mycollection.node = new PubSubNodeStorage('mymodels');
 
 will use the `mymodels` node on your XMPP PubSub server.
 
