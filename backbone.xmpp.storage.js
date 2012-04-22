@@ -98,7 +98,8 @@
     Backbone.xmppSync = function(method, model, options) {
 
         var p,
-            node = model.node || (model.collection && model.collection.node);
+            node = (model.node || model.node())||
+                   (model.collection && (model.collection.node || model.connection.node()));
 
         // If there is no node, fail directly, somebody did not read the docs.
         if (!node) return $.Deferred().reject().promise();
