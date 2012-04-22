@@ -2,7 +2,7 @@
 
     describe('PubSub Storage', function () {
 
-        var connection, response, p, model, collection, storage, successHandler, errorHandler, json;
+        var connection, response, p, model, collection, node, successHandler, errorHandler, json;
 
         var Model = Backbone.Model.extend({
                 sync: Backbone.xmppSync
@@ -15,7 +15,7 @@
 
         beforeEach(function () {
             connection = xmppMocker.mockConnection();
-            PubSubNodeStorage.prototype.connection = connection;
+            node = new PubSubNodeStorage('node', connection);
             successHandler = jasmine.createSpy('successHandler');
             errorHandler = jasmine.createSpy('errorHandler');
             json = {
@@ -33,7 +33,7 @@
                 return d.promise();
             });
             model = new Model(json);
-            model.node = new PubSubNodeStorage('node');
+            model.node = node;
             p = model.sync('create', model);
             p.done(successHandler);
             p.fail(errorHandler);
@@ -52,7 +52,7 @@
                 return d.promise();
             });
             model = new Model(json);
-            model.node = new PubSubNodeStorage('node');
+            model.node = node;
             model.id = 'foo';
             p = model.sync('update', model);
             p.done(successHandler);
@@ -73,7 +73,7 @@
                 return d.promise();
             });
             model = new Model({id: 'foo', content: 'Hello world'});
-            model.node = new PubSubNodeStorage('node');
+            model.node = node;
             p = model.sync('read', model);
             p.done(successHandler);
             p.fail(errorHandler);
@@ -95,7 +95,7 @@
                 return d.promise();
             });
             collection = new Collection();
-            collection.node = new PubSubNodeStorage('node');
+            collection.node = node;
             p = collection.sync('read', collection);
             p.done(successHandler);
             p.fail(errorHandler);
@@ -111,7 +111,7 @@
                 return d.promise();
             });
             model = new Model({id: 'foo'});
-            model.node = new PubSubNodeStorage('node');
+            model.node = node;
             p = model.sync('delete', model);
             p.done(successHandler);
             p.fail(errorHandler);

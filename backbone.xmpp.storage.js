@@ -10,17 +10,16 @@
 
 (function ($, _, Backbone, Strophe) {
 
-    // A PubSub node acting as storage. Create it with the node `id` it has on the XMPP server.
-    var PubSubNodeStorage = function(id) {
+    // A PubSub node acting as storage.
+    // Create it with the `id` the node has on the XMPP server,
+    // and a Strophe `connection`.
+    var PubSubNodeStorage = function(id, connection) {
         this.id = id;
+        this.connection = connection;
     };
-
 
     // Attach methods to **PubSubNodeStorage**.
     _.extend(PubSubNodeStorage.prototype, {
-
-        // A **PubSubNodeStorage** needs a `connection`.
-        connection: null,
 
         // **create** publishes to the node the model in JSON format.
         //Resolves by setting and returning the `id` of the item.
