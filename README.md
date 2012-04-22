@@ -18,11 +18,11 @@ In order for a collection to use the storage, override its `sync()` function and
         });
 
         var mycollection = new MyCollection();
-        mycollection.node = new PubSubNodeStorage('mymodels');
+        mycollection.node = new PubSubNodeStorage('mymodels', connection);
 
-will use the `mymodels` node on your XMPP PubSub server.
+where the arguments `'mymodels'`, and `connection` are the node id on your XMPP PubSub server, and a Strophe's connection instance respectively.
 
-For models, you do not need to specify the node (you can though), i.e. the following is sufficient:
+For models, it is not necessary to specify the node (you can though), i.e. the following is sufficient:
 
         var MyModel = Backbone.Model.extend({
             sync: Backbone.xmppSync,
@@ -36,11 +36,11 @@ That's it! Note that the storage will not take care of creating, configuring the
 
 ## Notifications
 
-If your user has subscribed to the node and your XMPP server is configured to support PEP-notifications you can use them to provide real-time server push to your models/collections.
+If your XMPP server is configured to support PEP-notifications and the user connected has subscribed to the node, you can provide real-time server push to your models/collections.
 
-Events are fired by the Strophe plugin, and you can bind to these in your collections. For example, you could in your collection's `initialize()` do
+Events are fired by the PubSub Strophe plugin, and you can bind to these in your collections. For example, you could in your collection's view `initialize()` or elsewhere do
 
-            PubSubNodeStorage.connection.PubSub.eventHandlers.on(
+            connection.PubSub.eventHandlers.on(
                 'xmpp:pubsub:item-published:mycollection',
                 this.itemAdded, this);
 
