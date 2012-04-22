@@ -51,6 +51,15 @@ There are four relevant events fired by the `PubSub` module:
 * `xmpp:pubsub:item-deleted` will fire whenever an item is deleted from a PubSub node. Parameters passed are `node` and `id`.
 * `xmpp:pubsub:item-deleted:*node_id*` same as above, but will only fire if the item belongs to the node with id `*node_id*`.
 
+## API documentation
+
+Please refer to the annotated source:
+
+* [backbone.xmpp.storage.js](http://ggozad.com/Backbone.xmpp/docs/backbone.xmpp.storage.html)
+* [strophe.pubsub.js](http://ggozad.com/strophe.plugins/docs/strophe.pubsub.html)
+* [strophe.forms.js](http://ggozad.com/strophe.plugins/docs/strophe.forms.html)
+
+
 ## License
 
 Backbone.xmpp.storage is Copyright (C) 2012 Yiorgis Gozadinos, Riot AS.
