@@ -17,7 +17,7 @@
         service: null,
         events: {},
 
-        // **init** adds the various namespaces we use, as well as extends `events` from
+        // **init** adds the various namespaces we use, as well as extends from
         // **Backbone.Events**.
         init: function (conn) {
             this._connection = conn;
@@ -27,7 +27,7 @@
             Strophe.addNamespace('PUBSUB_NODE_CONFIG', Strophe.NS.PUBSUB + '#node_config');
             Strophe.addNamespace('ATOM', 'http://www.w3.org/2005/Atom');
             Strophe.addNamespace('DELAY', 'urn:xmpp:delay');
-            _.extend(this.events, Backbone.Events);
+            _.extend(this, Backbone.Events);
         },
 
         // Register to PEP events when connected
@@ -40,7 +40,7 @@
 
         // Handle PEP events and trigger own events.
         _onReceivePEPEvent: function (ev) {
-            var that = this,
+            var self = this,
                 delay = $('delay[xmlns="' + Strophe.NS.DELAY + '"]', ev).attr('stamp');
             $('item', ev).each(function (idx, item) {
                 var node = $(item).parent().attr('node'),
@@ -55,13 +55,13 @@
                 if (delay) {
 
                     // PEP event for the last-published item on a node.
-                    that.events.trigger('xmpp:pubsub:last-published-item', {
+                    self.trigger('xmpp:pubsub:last-published-item', {
                         node: node,
                         id: id,
                         entry: entry,
                         timestamp: delay
                     });
-                    that.events.trigger('xmpp:pubsub:last-published-item:' + node, {
+                    self.trigger('xmpp:pubsub:last-published-item:' + node, {
                         id: id,
                         entry: entry,
                         timestamp: delay
@@ -69,12 +69,12 @@
                 } else {
 
                     // PEP event for an item newly published on a node.
-                    that.events.trigger('xmpp:pubsub:item-published', {
+                    self.trigger('xmpp:pubsub:item-published', {
                         node: node,
                         id: id,
                         entry: entry
                     });
-                    that.events.trigger('xmpp:pubsub:item-published:' + node, {
+                    self.trigger('xmpp:pubsub:item-published:' + node, {
                         id: id,
                         entry: entry
                     });
@@ -85,8 +85,8 @@
             $('retract', ev).each(function (idx, item) {
                 var node = $(item).parent().attr('node'),
                     id = $(item).attr('id');
-                that.events.trigger('xmpp:pubsub:item-deleted', {node: node, id: id});
-                that.events.trigger('xmpp:pubsub:item-deleted:' + node, {id: id});
+                self.trigger('xmpp:pubsub:item-deleted', {node: node, id: id});
+                self.trigger('xmpp:pubsub:item-deleted:' + node, {id: id});
             });
 
             return true;

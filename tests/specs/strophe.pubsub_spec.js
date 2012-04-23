@@ -16,9 +16,9 @@
             var itemPublishedHandler = jasmine.createSpy('itemPublishedHandler');
             var itemPublishedOnNodeHandler = jasmine.createSpy('itemPublishedOnNodeHandler');
 
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:last-published-item', lastPublishedHandler);
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:item-published', itemPublishedHandler);
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:item-published:anode', itemPublishedOnNodeHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:last-published-item', lastPublishedHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:item-published', itemPublishedHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:item-published:anode', itemPublishedOnNodeHandler);
 
             var message = $msg({from: Strophe.connection.PubSub.service, to: Strophe.connection.jid})
                 .c('event', {xmlns: Strophe.NS.PUBSUB_EVENT})
@@ -41,9 +41,9 @@
             var itemPublishedHandler = jasmine.createSpy('itemPublishedHandler');
             var itemPublishedOnNodeHandler = jasmine.createSpy('itemPublishedOnNodeHandler');
 
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:last-published-item', lastPublishedHandler);
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:item-published', itemPublishedHandler);
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:item-published:anode', itemPublishedOnNodeHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:last-published-item', lastPublishedHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:item-published', itemPublishedHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:item-published:anode', itemPublishedOnNodeHandler);
 
             var message = $msg({from: Strophe.connection.PubSub.service, to: Strophe.connection.jid})
                 .c('event', {xmlns: Strophe.NS.PUBSUB_EVENT})
@@ -64,9 +64,9 @@
             var lastPublishedHandler = jasmine.createSpy('lastPublishedHandler');
             var lastPublishedOnNodeHandler = jasmine.createSpy('lastPublishedOnNodeHandler');
             var itemPublishedHandler = jasmine.createSpy('itemPublishedHandler');
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:last-published-item', lastPublishedHandler);
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:item-published', itemPublishedHandler);
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:last-published-item:anode', lastPublishedOnNodeHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:last-published-item', lastPublishedHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:item-published', itemPublishedHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:last-published-item:anode', lastPublishedOnNodeHandler);
 
             var message = $msg({from: Strophe.connection.PubSub.service, to: Strophe.connection.jid})
                 .c('delay', {xmlns: Strophe.NS.DELAY, stamp: '2011-12-01T10:00:00Z'}).up()
@@ -89,9 +89,9 @@
             var lastPublishedHandler = jasmine.createSpy('lastPublishedHandler');
             var lastPublishedOnNodeHandler = jasmine.createSpy('lastPublishedOnNodeHandler');
             var itemPublishedHandler = jasmine.createSpy('itemPublishedHandler');
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:last-published-item', lastPublishedHandler);
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:item-published', itemPublishedHandler);
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:last-published-item:anode', lastPublishedOnNodeHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:last-published-item', lastPublishedHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:item-published', itemPublishedHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:last-published-item:anode', lastPublishedOnNodeHandler);
 
             var message = $msg({from: Strophe.connection.PubSub.service, to: Strophe.connection.jid})
                 .c('delay', {xmlns: Strophe.NS.DELAY, stamp: '2011-12-01T10:00:00Z'}).up()
@@ -112,8 +112,8 @@
         it('fires the "xmpp:pubsub:item-deleted" event when a PEP message is received for a retracted item', function () {
             var itemDeletedHandler = jasmine.createSpy('itemDeletedHandler');
             var itemDeletedOnNodeHandler = jasmine.createSpy('itemDeletedOnNodeHandler');
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:item-deleted', itemDeletedHandler);
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:item-deleted:anode', itemDeletedOnNodeHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:item-deleted', itemDeletedHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:item-deleted:anode', itemDeletedOnNodeHandler);
             var message = $msg({from: Strophe.connection.PubSub.service, to: Strophe.connection.jid})
                 .c('event', {xmlns: Strophe.NS.PUBSUB_EVENT})
                 .c('items', {node: 'anode'})
@@ -129,8 +129,8 @@
         it('does not fire an event when a transient PEP message is received', function () {
             var lastPublishedHandler = jasmine.createSpy('lastPublishedHandler');
             var itemPublishedHandler = jasmine.createSpy('itemPublishedHandler');
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:last-published-item', lastPublishedHandler);
-            Strophe.connection.PubSub.events.bind('xmpp:pubsub:item-published', itemPublishedHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:last-published-item', lastPublishedHandler);
+            Strophe.connection.PubSub.bind('xmpp:pubsub:item-published', itemPublishedHandler);
 
             var message = $msg({from: Strophe.connection.PubSub.service, to: Strophe.connection.jid})
                 .c('event', {xmlns: Strophe.NS.PUBSUB_EVENT})
