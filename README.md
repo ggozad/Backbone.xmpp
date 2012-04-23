@@ -40,7 +40,7 @@ If your XMPP server is configured to support PEP-notifications and the user conn
 
 Events are fired by the PubSub Strophe plugin, and you can bind to these in your collections. For example, you could in your collection's view `initialize()` or elsewhere do
 
-            connection.PubSub.eventHandlers.on(
+            connection.PubSub.on(
                 'xmpp:pubsub:item-published:mycollection',
                 this.itemAdded, this);
 
