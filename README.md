@@ -9,7 +9,7 @@ This package provides such a layer on top of [XMPP Publish-Subscribe][XEP-0060] 
 
 ## Usage
 
-In order for a collection to use the storage, override its `sync()` function and provide an instance of `PubSubNodeStorage` on the `node` attribute of the collection, for instance,
+In order for a collection to use the storage, override its `sync()` function and provide an instance of `PubSubStorage` on the `node` attribute of the collection, for instance,
 
         var MyCollection = Backbone.Collection.extend({
             sync: Backbone.xmppSync,
@@ -18,7 +18,7 @@ In order for a collection to use the storage, override its `sync()` function and
         });
 
         var mycollection = new MyCollection();
-        mycollection.node = new PubSubNodeStorage('mymodels', connection);
+        mycollection.node = new PubSubStorage('mymodels', connection);
 
 where the arguments `'mymodels'`, and `connection` are the node id on your XMPP PubSub server, and a Strophe's connection instance respectively.
 

@@ -13,13 +13,13 @@
     // A PubSub node acting as storage.
     // Create it with the `id` the node has on the XMPP server,
     // and a Strophe `connection`.
-    var PubSubNodeStorage = function(id, connection) {
+    var PubSubStorage = function(id, connection) {
         this.id = id;
         this.connection = connection;
     };
 
-    // Attach methods to **PubSubNodeStorage**.
-    _.extend(PubSubNodeStorage.prototype, {
+    // Attach methods to **PubSubStorage**.
+    _.extend(PubSubStorage.prototype, {
 
         // **create** publishes to the node the model in JSON format.
         //Resolves by setting and returning the `id` of the item.
@@ -94,7 +94,7 @@
 
     // **xmppAsync** is the replacement for **sync**. It delegates sync operations
     // to the model or collection's `node` property, which should be an instance
-    // of **PubSubNodeStorage**.
+    // of **PubSubStorage**.
     Backbone.xmppSync = function(method, model, options) {
 
         var p,
@@ -118,6 +118,6 @@
         return p;
     };
 
-    this.PubSubNodeStorage = PubSubNodeStorage;
+    this.PubSubStorage = PubSubStorage;
 
 })(this.jQuery, this._, this.Backbone, this.Strophe);

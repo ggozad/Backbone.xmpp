@@ -1,4 +1,4 @@
-(function ($, _, Backbone, Strophe, jasmine, xmppMocker, PubSubNodeStorage) {
+(function ($, _, Backbone, Strophe, jasmine, xmppMocker, PubSubStorage) {
 
     describe('PubSub Storage', function () {
 
@@ -15,7 +15,7 @@
 
         beforeEach(function () {
             connection = xmppMocker.mockConnection();
-            node = new PubSubNodeStorage('node', connection);
+            node = new PubSubStorage('node', connection);
             successHandler = jasmine.createSpy('successHandler');
             errorHandler = jasmine.createSpy('errorHandler');
             json = {
@@ -119,4 +119,4 @@
         });
 
     });
-})(this.jQuery, this._, this.Backbone, this.Strophe, this.jasmine, this.xmppMocker, this.PubSubNodeStorage);
+})(this.jQuery, this._, this.Backbone, this.Strophe, this.jasmine, this.xmppMocker, this.PubSubStorage);
