@@ -72,6 +72,24 @@
             expect(items.models.length).toEqual(1);
         });
 
+        it('removes an item from the collection upon receiving an PEP notification on an existing item', function () {
+            items = new PubSubItems([], {id: 'anode', connection: connection});
+            json.id = 'item_id';
+            items.add(json);
+            entry = $build('entry').t(JSON.stringify(json)).tree();
+            var message = $msg({from: connection.PubSub.service, to: connection.jid})
+                .c('event', {xmlns: Strophe.NS.PUBSUB_EVENT})
+                .c('items', {node: 'anode'})
+                .c('retract', {id: 'item_id'});
+            items.on('remove', successHandler);
+            xmppMocker.receive(connection, message);
+            expect(successHandler).toHaveBeenCalled();
+            item = items.get('item_id');
+            expect(item).not.toBeDefined();
+            expect(items.models.length).toEqual(0);
+        });
+
+
     });
 })(this.jQuery, this._, this.Backbone, this.Strophe, this.jasmine, this.xmppMocker,
    this.PubSubStorage, this.PubSubItem, this.PubSubItems);
