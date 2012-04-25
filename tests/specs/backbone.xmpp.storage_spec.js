@@ -104,6 +104,18 @@
                 {id: 'bar', content: 'Bye bye world', count: 4}]);
         });
 
+        it('retrieves only max_items items from the node when a fetch is called with options defining max_items', function () {
+            spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
+                expect(options.max_items).toEqual(10);
+                var d = $.Deferred();
+                d.resolve([]);
+                return d.promise();
+            });
+            collection = new Collection();
+            collection.node = node;
+            collection.fetch({max_items: 10});
+        });
+
         it("deletes the model from the node when sync() is called with a 'delete' action", function () {
             spyOn(connection.PubSub, 'deleteItem').andCallFake(function (nodeid, options) {
                 var d = $.Deferred();

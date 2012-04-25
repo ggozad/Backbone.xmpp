@@ -65,9 +65,10 @@
         },
 
         // **getItems** resolves by returning the array of all models currently published on the node.
-        getItems: function() {
+        getItems: function(options) {
             var d = $.Deferred(),
-                p = this.connection.PubSub.items(this.id);
+                p;
+            p = this.connection.PubSub.items(this.id, options);
             p.done(function (items) {
                 var id, attrs;
                 d.resolve(_.map(items, function (item) {
@@ -100,18 +101,19 @@
         var p,
             node = model.node || (model.collection && model.collection.node);
 
+        options = options || {};
+
         // If there is no node, fail directly, somebody did not read the docs.
         if (!node) return $.Deferred().reject().promise();
 
         switch (method) {
-            case "read":    p = typeof model.id !== 'undefined' ? node.getItem(model) : node.getItems(); break;
+            case "read":    p = typeof model.id !== 'undefined' ? node.getItem(model) : node.getItems(options); break;
             case "create":  p = node.create(model); break;
             case "update":  p = node.update(model); break;
             case "delete":  p = node.destroy(model); break;
         }
 
         // Fallback for old-style callbacks.
-        options = options || {};
         if (options.success) p.done(options.success);
         if (options.error) p.fail(options.error);
 
