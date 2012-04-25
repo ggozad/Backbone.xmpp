@@ -1,13 +1,13 @@
-(function ($, _, Backbone, Strophe, jasmine, xmppMocker, PubSubStorage, PubSubItem, PubSubItems) {
+(function ($, _, Backbone, Strophe, jasmine, xmppMocker, PubSubStorage, PubSubItem, PubSubNode) {
 
-    describe('PubSubItem/PubSubItems model/collection', function () {
+    describe('PubSubItem/PubSubNode model/collection', function () {
 
         var connection, response, p, successHandler, errorHandler, json, entry,
             item, items;
 
         var Model = PubSubItem.extend({
             }),
-            Collection = PubSubItems.extend({
+            Collection = PubSubNode.extend({
                 model: Model
             });
 
@@ -36,7 +36,7 @@
         });
 
         it('adds an item to the collection upon receiving an PEP notification on a non-existing item and fires the "add" event.', function () {
-            items = new PubSubItems([], {id: 'anode', connection: connection});
+            items = new PubSubNode([], {id: 'anode', connection: connection});
             message = $msg({from: connection.PubSub.service, to: connection.jid})
                 .c('event', {xmlns: Strophe.NS.PUBSUB_EVENT})
                 .c('items', {node: 'anode'})
@@ -53,7 +53,7 @@
         });
 
         it('updates an item in the collection upon receiving an PEP notification on an existing item', function () {
-            items = new PubSubItems([], {id: 'anode', connection: connection});
+            items = new PubSubNode([], {id: 'anode', connection: connection});
             json.id = 'item_id';
             items.add(json);
             json.title = 'An updated entry';
@@ -73,7 +73,7 @@
         });
 
         it('removes an item from the collection upon receiving an PEP notification on an existing item', function () {
-            items = new PubSubItems([], {id: 'anode', connection: connection});
+            items = new PubSubNode([], {id: 'anode', connection: connection});
             json.id = 'item_id';
             items.add(json);
             entry = $build('entry').t(JSON.stringify(json)).tree();
@@ -92,4 +92,4 @@
 
     });
 })(this.jQuery, this._, this.Backbone, this.Strophe, this.jasmine, this.xmppMocker,
-   this.PubSubStorage, this.PubSubItem, this.PubSubItems);
+   this.PubSubStorage, this.PubSubItem, this.PubSubNode);

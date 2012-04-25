@@ -18,7 +18,7 @@
     });
 
     // PubSub Items collection
-    var PubSubItems = Backbone.Collection.extend({
+    var PubSubNode = Backbone.Collection.extend({
 
         model: PubSubItem,
         node: null,
@@ -81,6 +81,6 @@
     });
 
     this.PubSubItem = PubSubItem;
-    this.PubSubItems = PubSubItems;
+    this.PubSubNode = PubSubNode;
 
 })(this.jQuery, this._, this.Backbone, this.Strophe, this.PubSubStorage);
