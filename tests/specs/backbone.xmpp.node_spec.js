@@ -35,8 +35,8 @@
             expect(items.node.connection).toEqual(connection);
         });
 
-        it('adds an item to the collection upon receiving an PEP notification on a non-existing item and fires the "add" event.', function () {
-            items = new PubSubNode([], {id: 'anode', connection: connection});
+        it('adds an item to index 0 of the collection upon receiving an PEP notification on a non-existing item and fires the "add" event.', function () {
+            items = new PubSubNode([{id: 'xxx', title: 'Old entry'}], {id: 'anode', connection: connection});
             message = $msg({from: connection.PubSub.service, to: connection.jid})
                 .c('event', {xmlns: Strophe.NS.PUBSUB_EVENT})
                 .c('items', {node: 'anode'})
@@ -50,10 +50,12 @@
             expect(item.get('title')).toEqual('An entry');
             expect(item.get('published')).toEqual('1974-06-05T09:13:00Z');
             expect(item.get('geolocation')).toEqual({latitude: 10.23, longitude: 20.45});
+            // Make sure it's first on the list
+            expect(items.indexOf(item)).toEqual(0);
         });
 
-        it('updates an item in the collection upon receiving an PEP notification on an existing item', function () {
-            items = new PubSubNode([], {id: 'anode', connection: connection});
+        it('updates an item in the collection upon receiving an PEP notification on an existing item and fires the "change" event only.', function () {
+            items = new PubSubNode([{id: 'xxx', title: 'Old entry'}], {id: 'anode', connection: connection});
             json.id = 'item_id';
             items.add(json);
             json.title = 'An updated entry';
@@ -64,12 +66,17 @@
                 .c('item', {id: 'item_id'})
                 .cnode(entry);
             items.on('change', successHandler);
+            items.on('add', errorHandler);
+            items.on('remove', errorHandler);
             xmppMocker.receive(connection, message);
             expect(successHandler).toHaveBeenCalled();
+            expect(errorHandler).not.toHaveBeenCalled();
             item = items.get('item_id');
             expect(item).toBeDefined();
             expect(item.get('title')).toEqual('An updated entry');
-            expect(items.models.length).toEqual(1);
+            expect(items.models.length).toEqual(2);
+            // Make sure it's first on the list
+            expect(items.indexOf(item)).toEqual(0);
         });
 
         it('removes an item from the collection upon receiving an PEP notification on an existing item', function () {

@@ -52,11 +52,13 @@
                 existing = self.get(item.id),
                 json = JSON.parse($(payload).text());
                 if (existing) {
-                    existing.clear();
+                    self.remove(existing, {silent: true});
+                    self.add(existing, {at: 0, silent: true});
+                    existing.clear({silent: true});
                     existing.set(json);
                 } else {
                     json.id = item.id;
-                    self.add(json);
+                    self.add(json, {at: 0});
                 }
             });
 
