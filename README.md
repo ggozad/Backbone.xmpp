@@ -51,6 +51,10 @@ There are four relevant events fired by the `PubSub` module:
 * `xmpp:pubsub:item-deleted` will fire whenever an item is deleted from a PubSub node. Parameters passed are `node` and `id`.
 * `xmpp:pubsub:item-deleted:*node_id*` same as above, but will only fire if the item belongs to the node with id `*node_id*`.
 
+## Base collection/model
+
+In order to help you with implementing your own, base collection/modules are provided in `backbone.xmpp.node.js`, namely `PubSubNode` (the collection) and `PubSubItem` (the model). These will automatically subscribe to add/update/delete XMPP events and will trigger `add`, `change`, `remove` Backbone events accordingly. You can directly extend from them or use them for inspiration and provide your own logic.
+
 ## API documentation
 
 Please refer to the annotated source:
