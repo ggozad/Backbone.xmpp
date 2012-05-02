@@ -76,7 +76,7 @@ Note that passing `options` to initialize with `id` and `connection` will initia
 Please refer to the annotated source:
 
 * [backbone.xmpp.storage.js](http://ggozad.com/Backbone.xmpp/docs/backbone.xmpp.storage.html)
-* [backbone.xmpp.mode.js](http://ggozad.com/Backbone.xmpp/docs/backbone.xmpp.node.html)
+* [backbone.xmpp.node.js](http://ggozad.com/Backbone.xmpp/docs/backbone.xmpp.node.html)
 * [strophe.pubsub.js](http://ggozad.com/strophe.plugins/docs/strophe.pubsub.html)
 * [strophe.forms.js](http://ggozad.com/strophe.plugins/docs/strophe.forms.html)
 
