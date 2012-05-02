@@ -54,7 +54,6 @@
                 if (existing) {
                     self.remove(existing, {silent: true});
                     self.add(existing, {at: 0, silent: true});
-                    existing.clear({silent: true});
                     existing.set(json);
                 } else {
                     json.id = item.id;
