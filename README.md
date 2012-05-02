@@ -40,9 +40,9 @@ If your XMPP server is configured to support PEP-notifications and the user conn
 
 Events are fired by the PubSub Strophe plugin, and you can bind to these in your collections. For example, in the `initialize()` of your collection's view, you can do
 
-            connection.PubSub.on(
-                'xmpp:pubsub:item-published:mycollection',
-                this.itemPublished, this);
+        connection.PubSub.on(
+            'xmpp:pubsub:item-published:mycollection',
+            this.itemPublished, this);
 
 in order to bind the `xmpp:pubsub:item-published` event of the `mycollection` node to the `itemPublished` function.
 
@@ -55,7 +55,21 @@ There are four relevant events fired by the `PubSub` module:
 
 ## Base collection/model
 
-Base collection/models using the Pub-Sub storage are provided in `backbone.xmpp.node.js`, namely `PubSubNode` (the collection) and `PubSubItem` (the model). These will automatically subscribe to the add/update/delete XMPP events and will trigger the `add`, `change`, `remove` Backbone events, respectively. You can directly extend from them or use them for inspiration and provide your own logic.
+Base collection/models using the Pub-Sub storage are provided in `backbone.xmpp.node.js`, namely `PubSubNode` (the collection) and `PubSubItem` (the model). These will automatically subscribe to the add/update/delete XMPP events and will trigger the `add`, `change`, `remove` Backbone events, respectively. You can directly extend from them:
+
+
+        var MyModel = PubSubItem.extend({
+            ...
+        });
+
+        var MyCollection = PubSubNode.extend({
+            model: MyModel,
+            ...
+        });
+
+        var mycollection = new MyCollection([], {id: 'mymodels', connection: connection});
+
+Note that passing `options` to initialize with `id` and `connection` will initialize the `node` as well as setup event handling.
 
 ## API documentation
 
