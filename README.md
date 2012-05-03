@@ -32,7 +32,7 @@ For models, it is not necessary to specify the node (though you can, on the rare
         var mymodel = new MyModel();
         mycollection.add(mymodel);
 
-That's it! Note that the storage will not take care of creating, configuring the node or managing subscriptions. This should be typically done on the server. However, if you wish to do so client-side, you can by means of utilising the bundled [PubSub plugin](http://github.com/ggozad/strophe.plugins) for [Strophe].
+That's it! Note that the storage will not take care of creating, configuring the node or managing subscriptions. This should be typically done on the server. However, if you wish to do so client-side, you can by means of utilising the bundled [PubSub plugin](http://ggozad.github.com/strophe.plugins) for [Strophe].
 
 ## Notifications
 
@@ -75,10 +75,10 @@ Note that passing `options` to initialize with `id` and `connection` will initia
 
 Please refer to the annotated source:
 
-* [backbone.xmpp.storage.js](http://ggozad.com/Backbone.xmpp/docs/backbone.xmpp.storage.html)
-* [backbone.xmpp.node.js](http://ggozad.com/Backbone.xmpp/docs/backbone.xmpp.node.html)
-* [strophe.pubsub.js](http://ggozad.com/strophe.plugins/docs/strophe.pubsub.html)
-* [strophe.forms.js](http://ggozad.com/strophe.plugins/docs/strophe.forms.html)
+* [backbone.xmpp.storage.js](http://ggozad.github.com/Backbone.xmpp/docs/backbone.xmpp.storage.html)
+* [backbone.xmpp.node.js](http://ggozad.github.com/Backbone.xmpp/docs/backbone.xmpp.node.html)
+* [strophe.pubsub.js](http://ggozad.github.com/strophe.plugins/docs/strophe.pubsub.html)
+* [strophe.forms.js](http://ggozad.github.com/strophe.plugins/docs/strophe.forms.html)
 
 
 ## License
