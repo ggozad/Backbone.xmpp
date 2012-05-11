@@ -80,6 +80,9 @@ Please refer to the annotated source:
 * [strophe.pubsub.js](http://ggozad.github.com/strophe.plugins/docs/strophe.pubsub.html)
 * [strophe.forms.js](http://ggozad.github.com/strophe.plugins/docs/strophe.forms.html)
 
+## Demo
+
+You can watch Backbone.xmpp in action [here](http://ggozad.com/blog/2012/05/03/a-pub-sub-storage-for-backbone-using-xmpp/).
 
 ## License
 
