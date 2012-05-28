@@ -11,26 +11,30 @@ This package provides such a layer on top of [XMPP Publish-Subscribe][XEP-0060] 
 
 In order for a collection to use the storage, override its `sync()` function and provide an instance of `PubSubStorage` on the `node` attribute of the collection, for instance:
 
-        var MyCollection = Backbone.Collection.extend({
-            sync: Backbone.xmppSync,
-            model: MyModel,
-            ...
-        });
+```javascript
+var MyCollection = Backbone.Collection.extend({
+    sync: Backbone.xmppSync,
+    model: MyModel,
+    ...
+});
 
-        var mycollection = new MyCollection();
-        mycollection.node = new PubSubStorage('mymodels', connection);
+var mycollection = new MyCollection();
+mycollection.node = new PubSubStorage('mymodels', connection);
+```
 
 where the arguments `'mymodels'`, and `connection` are the node id on your XMPP PubSub server, and Strophe's connection object, respectively.
 
 For models, it is not necessary to specify the node (though you can, on the rare occasion where you sync a model *without* a collection), i.e. the following is sufficient:
 
-        var MyModel = Backbone.Model.extend({
-            sync: Backbone.xmppSync,
-            ...
-        });
+```javascript
+var MyModel = Backbone.Model.extend({
+    sync: Backbone.xmppSync,
+    ...
+});
 
-        var mymodel = new MyModel();
-        mycollection.add(mymodel);
+var mymodel = new MyModel();
+mycollection.add(mymodel);
+```
 
 That's it! Note that the storage will not take care of creating, configuring the node or managing subscriptions. This should be typically done on the server. However, if you wish to do so client-side, you can by means of utilising the bundled [PubSub plugin](http://ggozad.github.com/strophe.plugins) for [Strophe].
 
@@ -40,9 +44,11 @@ If your XMPP server is configured to support PEP-notifications and the user conn
 
 Events are fired by the PubSub Strophe plugin, and you can bind to these in your collections. For example, in the `initialize()` of your collection's view, you can do
 
-        connection.PubSub.on(
-            'xmpp:pubsub:item-published:mymodels',
-            this.itemPublished, this);
+```javascript
+connection.PubSub.on(
+    'xmpp:pubsub:item-published:mymodels',
+    this.itemPublished, this);
+```
 
 in order to bind the `xmpp:pubsub:item-published` event of the `mycollection` node to the `itemPublished` function.
 
@@ -57,17 +63,18 @@ There are four relevant events fired by the `PubSub` module:
 
 Base collection/models using the Pub-Sub storage are provided in `backbone.xmpp.node.js`, namely `PubSubNode` (the collection) and `PubSubItem` (the model). These will automatically subscribe to the add/update/delete XMPP events and will trigger the `add`, `change`, `remove` Backbone events, respectively. You can directly extend from them:
 
+```javascript
+var MyModel = PubSubItem.extend({
+    ...
+});
 
-        var MyModel = PubSubItem.extend({
-            ...
-        });
+var MyCollection = PubSubNode.extend({
+    model: MyModel,
+    ...
+});
 
-        var MyCollection = PubSubNode.extend({
-            model: MyModel,
-            ...
-        });
-
-        var mycollection = new MyCollection([], {id: 'mymodels', connection: connection});
+var mycollection = new MyCollection([], {id: 'mymodels', connection: connection});
+```
 
 Note that passing `options` to initialize with `id` and `connection` will initialize the `node` as well as setup event handling.
 
