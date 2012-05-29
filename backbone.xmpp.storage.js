@@ -8,7 +8,18 @@
 // A simple module to replace **Backbone.sync** with *XMPP PubSub*-based
 // persistence.
 
-(function ($, _, Backbone, Strophe) {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['jquery', 'underscore', 'backbone', 'strophe'], function () {
+            return (root.PubSubStorage = factory($, _, Backbone, Strophe));
+        });
+    } else {
+        // Browser globals
+        root.PubSubStorage = factory($, _, Backbone, Strophe);
+    }
+
+}(this, function ($, _, Backbone, Strophe) {
 
     // A PubSub node acting as storage.
     // Create it with the `id` the node has on the XMPP server,
@@ -135,6 +146,6 @@
         return p;
     };
 
-    this.PubSubStorage = PubSubStorage;
+    return PubSubStorage;
 
-})(this.jQuery, this._, this.Backbone, this.Strophe);
+}));
