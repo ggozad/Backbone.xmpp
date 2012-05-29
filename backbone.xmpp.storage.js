@@ -22,7 +22,7 @@
     _.extend(PubSubStorage.prototype, {
 
         // **create** publishes to the node the model in JSON format.
-        //Resolves by setting and returning the `id` of the item.
+        //Resolves by setting the `id` on the item and returning it.
         create: function(model) {
             var d = $.Deferred(),
                 entry = $build('entry').t(JSON.stringify(model.toJSON())).tree(),
@@ -35,6 +35,7 @@
         },
 
         // **update** a model by re-publishing it on the node.
+        // Resolves by returning the model
         update: function(model) {
             var d = $.Deferred(),
                 entry = $build('entry').t(JSON.stringify(model.toJSON())).tree(),
@@ -61,7 +62,8 @@
             return d.promise();
         },
 
-        // **getItems** resolves by returning the array of all models currently published on the node.
+        // **getItems** retrieves all items from the node.
+        // Resolves by returning a list of all the models published on the node.
         getItems: function(options) {
             var d = $.Deferred(),
                 p;
