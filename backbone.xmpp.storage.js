@@ -47,7 +47,7 @@
         },
 
         // **getItem** retrieves a model from the node by `id`.
-        // Resolves by returning the attributes that are different and their values.
+        // Resolves by returning the attributes of the model that are different and their values.
         getItem: function(model) {
             var d = $.Deferred(),
                 p = this.connection.PubSub.items(this.id, {item_ids: [model.id]});
@@ -62,8 +62,8 @@
             return d.promise();
         },
 
-        // **getItems** retrieves all items from the node.
-        // Resolves by returning a list of all the models published on the node.
+        // **getItems** retrieves all models from the node.
+        // Resolves by returning a list of all its models in JSON format.
         getItems: function(options) {
             var d = $.Deferred(),
                 p;
