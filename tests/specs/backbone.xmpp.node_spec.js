@@ -54,6 +54,30 @@
             expect(items.indexOf(item)).toEqual(0);
         });
 
+        it('adds an item to index 0 of the collection upon receiving an PEP notification on a non-existing item without a payload and fires the "add" event.', function () {
+            spyOn(connection.PubSub, 'items').andCallFake(function () {
+                var d = $.Deferred(),
+                    response = $build('item', {id: 'item_id'}).cnode(entry).tree();
+                d.resolve(response);
+                return d.promise();
+            });
+            items = new PubSubNode([{id: 'xxx', title: 'Old entry'}], {id: 'anode', connection: connection});
+            message = $msg({from: connection.PubSub.service, to: connection.jid})
+                .c('event', {xmlns: Strophe.NS.PUBSUB_EVENT})
+                .c('items', {node: 'anode'})
+                .c('item', {id: 'item_id'});
+            items.on('add', successHandler);
+            xmppMocker.receive(connection, message);
+            expect(successHandler).toHaveBeenCalled();
+            item = items.get('item_id');
+            expect(item).toBeDefined();
+            expect(item.get('title')).toEqual('An entry');
+            expect(item.get('published')).toEqual('1974-06-05T09:13:00Z');
+            expect(item.get('geolocation')).toEqual({latitude: 10.23, longitude: 20.45});
+            // Make sure it's first on the list
+            expect(items.indexOf(item)).toEqual(0);
+        });
+
         it('updates an item in the collection upon receiving an PEP notification on an existing item and fires the "change" event only.', function () {
             items = new PubSubNode([{id: 'xxx', title: 'Old entry'}], {id: 'anode', connection: connection});
             json.id = 'item_id';

@@ -64,7 +64,7 @@
             if (payload) {
                 d.resolve();
             } else {
-                XMPP.connection.PubSub.items(this.node.id, {item_ids: [item.id]})
+                this.node.connection.PubSub.items(this.node.id, {item_ids: [item.id]})
                     .done(function (res) {
                         payload = $('entry', res);
                         d.resolve();
