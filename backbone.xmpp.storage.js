@@ -30,8 +30,7 @@
             p.done(function (id) {
                 model.id = id;
                 d.resolve(model);
-            });
-            p.fail(d.reject);
+            }).fail(d.reject);
             return d.promise();
         },
 
@@ -42,8 +41,7 @@
                 p = this.connection.PubSub.publish(this.id, entry, model.id);
             p.done(function (id) {
                 d.resolve(model);
-            });
-            p.fail(d.reject);
+            }).fail(d.reject);
             return d.promise();
         },
 
@@ -59,8 +57,7 @@
                     if (model.get(key) !== value) updated[key] = value;
                 });
                 d.resolve(updated);
-            });
-            p.fail(d.reject);
+            }).fail(d.reject);
             return d.promise();
         },
 
@@ -76,8 +73,7 @@
                     attrs.id = $(item).attr('id');
                     return attrs;
                 }));
-            });
-            p.fail(d.reject);
+            }).fail(d.reject);
             return d.promise();
         },
 
@@ -86,8 +82,9 @@
         destroy: function(model) {
             var d = $.Deferred(),
                 p = this.connection.PubSub.deleteItem(this.id, model.id);
-            p.done(function () { d.resolve(model); });
-            p.fail(d.reject);
+            p.done(function () {
+                d.resolve(model);
+            }).fail(d.reject);
             return d.promise();
         }
 
