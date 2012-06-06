@@ -24,12 +24,12 @@
         // **create** publishes to the node the model in JSON format.
         //Resolves by setting the `id` on the item and returning it.
         create: function(model) {
-            var d = $.Deferred(),
+            var d = $.Deferred(), res = {},
                 entry = $build('entry').t(JSON.stringify(model.toJSON())).tree();
             this.connection.PubSub.publish(this.id, entry)
                 .done(function (id) {
-                    model.id = id;
-                    d.resolve(model);
+                    res[model.idAttribute] = id;
+                    d.resolve(res);
                 })
                 .fail(d.reject);
             return d.promise();
@@ -41,9 +41,7 @@
             var d = $.Deferred(),
                 entry = $build('entry').t(JSON.stringify(model.toJSON())).tree();
             this.connection.PubSub.publish(this.id, entry, model.id)
-                .done(function (id) {
-                    d.resolve(model);
-                })
+                .done(function () { d.resolve(); })
                 .fail(d.reject);
             return d.promise();
         },
@@ -85,13 +83,7 @@
         // **destroy** deletes the item correcsponding to the `model` from the node.
         // Resolves by returning the `model`.
         destroy: function(model) {
-            var d = $.Deferred();
-            this.connection.PubSub.deleteItem(this.id, model.id)
-                .done(function () {
-                    d.resolve(model);
-                })
-                .fail(d.reject);
-            return d.promise();
+            return this.connection.PubSub.deleteItem(this.id, model.id);
         }
 
     });

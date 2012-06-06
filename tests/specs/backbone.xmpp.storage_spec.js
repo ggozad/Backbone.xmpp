@@ -24,7 +24,7 @@
             };
         });
 
-        it('publishes a model to the node when sync() is called with a "create"', function () {
+        it('publishes a model to the node when an new model is saved and sync() is called with a "create"', function () {
             spyOn(connection.PubSub, 'publish').andCallFake(function (nodeid, entry) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
@@ -34,15 +34,15 @@
             });
             model = new Model(json);
             model.node = node;
-            p = model.sync('create', model);
+            p = model.save();
             p.done(successHandler);
             p.fail(errorHandler);
-            expect(successHandler).toHaveBeenCalledWith(model);
+            expect(successHandler).toHaveBeenCalledWith({id: 'foo'});
             expect(errorHandler).wasNotCalled();
             expect(model.id).toEqual('foo');
         });
 
-        it('publishes a model to the node when sync() is called with a "update"', function () {
+        it('publishes a model to the node when an existing model is saved and sync() is called with a "update"', function () {
             spyOn(connection.PubSub, 'publish').andCallFake(function (nodeid, entry, itemid) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
@@ -54,14 +54,14 @@
             model = new Model(json);
             model.node = node;
             model.id = 'foo';
-            p = model.sync('update', model);
+            p = model.save();
             p.done(successHandler);
             p.fail(errorHandler);
-            expect(successHandler).toHaveBeenCalledWith(model);
+            expect(successHandler).toHaveBeenCalledWith();
             expect(errorHandler).wasNotCalled();
         });
 
-        it("returns the model's attributes that have changed on the node when sync() is called with a 'read' action on a model", function () {
+        it("returns the model's attributes that have changed on the node when an existing model is fetched and sync() is called with a 'read'", function () {
             spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
@@ -74,13 +74,14 @@
             });
             model = new Model({id: 'foo', content: 'Hello world'});
             model.node = node;
-            p = model.sync('read', model);
+            p = model.fetch();
             p.done(successHandler);
             p.fail(errorHandler);
             expect(successHandler).toHaveBeenCalledWith({count: 3});
+            expect(errorHandler).wasNotCalled();
         });
 
-        it("returns all models on the node when sync() is called with a 'read' action on a collection", function () {
+        it("returns all models on the node when a collection is fetched and sync() is called with a 'read'", function () {
             spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
@@ -96,12 +97,13 @@
             });
             collection = new Collection();
             collection.node = node;
-            p = collection.sync('read', collection);
+            p = collection.fetch();
             p.done(successHandler);
             p.fail(errorHandler);
             expect(successHandler).toHaveBeenCalledWith(
                 [{id: 'foo', content: 'Hello world', count: 3},
                 {id: 'bar', content: 'Bye bye world', count: 4}]);
+            expect(errorHandler).wasNotCalled();
         });
 
         it('retrieves only max_items items from the node when a fetch is called with options defining max_items', function () {
@@ -124,10 +126,11 @@
             });
             model = new Model({id: 'foo'});
             model.node = node;
-            p = model.sync('delete', model);
+            p = model.destroy();
             p.done(successHandler);
             p.fail(errorHandler);
-            expect(successHandler).toHaveBeenCalledWith(model);
+            expect(successHandler).toHaveBeenCalled();
+            expect(errorHandler).wasNotCalled();
         });
 
     });
