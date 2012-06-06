@@ -1,4 +1,4 @@
-//    Backbone XMPP PubSub Storage v0.1
+//    Backbone XMPP PubSub Storage v0.2
 
 //    (c) 2012 Yiorgis Gozadinos, Riot AS.
 //    Backbone.xmpp is distributed under the MIT license.
@@ -24,26 +24,24 @@
         // **create** publishes to the node the model in JSON format.
         //Resolves by setting the `id` on the item and returning it.
         create: function(model) {
-            var d = $.Deferred(),
+            var d = $.Deferred(), res = {},
                 entry = $build('entry').t(JSON.stringify(model.toJSON())).tree();
             this.connection.PubSub.publish(this.id, entry)
                 .done(function (id) {
-                    model.id = id;
-                    d.resolve(model);
+                    res[model.idAttribute] = id;
+                    d.resolve(res);
                 })
                 .fail(d.reject);
             return d.promise();
         },
 
         // **update** a model by re-publishing it on the node.
-        // Resolves by returning the model
+        // Resolves with no result as under no circumstances the server will change any attributes.
         update: function(model) {
             var d = $.Deferred(),
                 entry = $build('entry').t(JSON.stringify(model.toJSON())).tree();
             this.connection.PubSub.publish(this.id, entry, model.id)
-                .done(function (id) {
-                    d.resolve(model);
-                })
+                .done(function () { d.resolve(); })
                 .fail(d.reject);
             return d.promise();
         },
@@ -83,15 +81,9 @@
         },
 
         // **destroy** deletes the item correcsponding to the `model` from the node.
-        // Resolves by returning the `model`.
+        // Resolves by returning the `iq` response.
         destroy: function(model) {
-            var d = $.Deferred();
-            this.connection.PubSub.deleteItem(this.id, model.id)
-                .done(function () {
-                    d.resolve(model);
-                })
-                .fail(d.reject);
-            return d.promise();
+            return this.connection.PubSub.deleteItem(this.id, model.id);
         }
 
     });
