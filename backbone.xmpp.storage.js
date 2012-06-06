@@ -1,4 +1,4 @@
-//    Backbone XMPP PubSub Storage v0.1
+//    Backbone XMPP PubSub Storage v0.2
 
 //    (c) 2012 Yiorgis Gozadinos, Riot AS.
 //    Backbone.xmpp is distributed under the MIT license.
@@ -36,7 +36,7 @@
         },
 
         // **update** a model by re-publishing it on the node.
-        // Resolves by returning the model
+        // Resolves with no result as under no circumstances the server will change any attributes.
         update: function(model) {
             var d = $.Deferred(),
                 entry = $build('entry').t(JSON.stringify(model.toJSON())).tree();
@@ -81,7 +81,7 @@
         },
 
         // **destroy** deletes the item correcsponding to the `model` from the node.
-        // Resolves by returning the `model`.
+        // Resolves by returning the `iq` response.
         destroy: function(model) {
             return this.connection.PubSub.deleteItem(this.id, model.id);
         }
