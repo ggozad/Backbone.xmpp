@@ -1,6 +1,6 @@
 //    Backbone XMPP PubSub Storage v0.2
 
-//    (c) 2012 Yiorgis Gozadinos, Riot AS.
+//    (c) 2012 Yiorgis Gozadinos.
 //    Backbone.xmpp is distributed under the MIT license.
 //    http://github.com/ggozad/Backbone.xmpp
 

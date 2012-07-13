@@ -93,7 +93,7 @@ You can watch Backbone.xmpp in action [here](http://ggozad.com/blog/2012/05/03/a
 
 ## License
 
-Backbone.xmpp.storage is Copyright (C) 2012 Yiorgis Gozadinos, Riot AS.
+Backbone.xmpp.storage is Copyright (C) 2012 Yiorgis Gozadinos.
 It is distributed under the MIT license.
 
 [Backbone]: http://documentcloud.github.com/backbone
