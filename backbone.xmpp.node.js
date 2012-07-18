@@ -36,6 +36,12 @@
                 options.connection.PubSub.on('xmpp:pubsub:item-deleted:' + options.id, this.onItemDeleted, this);
             }
         },
+		
+        setNode: function(id, connection) {
+            this.node = new PubSubStorage(id, connection);
+            connection.PubSub.on('xmpp:pubsub:item-published:' + id, this.onItemPublished, this);
+            connection.PubSub.on('xmpp:pubsub:item-deleted:' + id, this.onItemDeleted, this);
+        },
 
         // **onItemPublished** is a subscriber to the `xmpp:pubsub:item-published` event.
         // When a model has been pushed to the server from a different client, it will be
