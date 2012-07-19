@@ -147,6 +147,27 @@
                 {id: 'bar', content: 'Bye bye world', count: 4}]);
             expect(errorHandler).wasNotCalled();
         });
+        
+        it("returns all models on the node when an atom formatted collection is fetched and sync() is called with a 'read'", function () {
+            node = new PubSubStorage('node', connection, 'atom');
+            spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
+                var d = $.Deferred();
+                expect(nodeid).toEqual('node');
+                response = [$('<entry xmlns="http://www.w3.org/2005/Atom"><content>Hello world</content><count>3</count><updated>2012-07-19T14:02:07Z</updated></entry>').get(0),
+                    $('<entry xmlns="http://www.w3.org/2005/Atom"><content>Bye bye world</content><count>4</count><updated>2012-07-19T14:02:07Z</updated></entry>').get(0)];
+                d.resolve(response);
+                return d.promise();
+            });
+            collection = new Collection();
+            collection.node = node;
+            p = collection.fetch();
+            p.done(successHandler);
+            p.fail(errorHandler);
+            expect(successHandler).toHaveBeenCalledWith(
+                [{updated: '2012-07-19T14:02:07Z', content: 'Hello world', count: '3'},
+                {updated: '2012-07-19T14:02:07Z', content: 'Bye bye world', count: '4'}]);
+            expect(errorHandler).wasNotCalled();
+        });
 
         it('retrieves only max_items items from the node when a fetch is called with options defining max_items', function () {
             spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
