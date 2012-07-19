@@ -65,14 +65,11 @@
         // **getItems** retrieves all models from the node.
         // Resolves by returning a list of all its models in JSON format.
         getItems: function(options) {
-            var d = $.Deferred();
+            var d = $.Deferred(), that = this;
             this.connection.PubSub.items(this.id, options)
                 .done(function (items) {
-                    var id, attrs;
                     d.resolve(_.map(items, function (item) {
-                        attrs = JSON.parse($('entry', item).text());
-                        attrs.id = $(item).attr('id');
-                        return attrs;
+                        return that._parse(item);
                     }));
                 })
                 .fail(d.reject);
@@ -93,6 +90,17 @@
             else {
                 var entry = $build('entry').t(JSON.stringify(model.toJSON())).tree();
                 return this.connection.PubSub.publish(node, entry, item_id);
+            }
+        },
+        
+        _parse: function(item) {
+            if (this.payloadFormat === 'atom') {
+                return this.connection.PubSub._AtomToJson(item);
+            }
+            else {
+                var attrs = JSON.parse($('entry', item).text());
+                attrs.id = $(item).attr('id');
+                return attrs;
             }
         }
 
