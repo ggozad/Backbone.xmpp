@@ -88,11 +88,11 @@
         // Publish in particular format
         _publish: function(node, model, item_id) {
             if (this.payloadFormat === 'atom') {
-                return this.connection.PubSub.publishAtom(node, model.toJSON(), item_id)
+                return this.connection.PubSub.publishAtom(node, model.toJSON(), item_id);
             }
             else {
                 var entry = $build('entry').t(JSON.stringify(model.toJSON())).tree();
-                return this.connection.PubSub.publish(node, entry, item_id)
+                return this.connection.PubSub.publish(node, entry, item_id);
             }
         }
 
