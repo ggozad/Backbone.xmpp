@@ -31,7 +31,7 @@
         initialize: function (models, options) {
             options = options || {};
             if (options.id && options.connection) {
-		this.setNode(options.id, options.connection);
+                this.setNode(options.id, options.connection);
             }
         },
 		
