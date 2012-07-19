@@ -32,6 +32,9 @@
             options = options || {};
             if (options.id && options.connection) {
                 this.setNode(options.id, options.connection);
+                if (options.payloadFormat) {
+                    this.node.payloadFormat = options.payloadFormat;
+                }
             }
         },
 		

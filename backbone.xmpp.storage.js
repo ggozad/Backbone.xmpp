@@ -13,9 +13,10 @@
     // A PubSub node acting as storage.
     // Create it with the `id` the node has on the XMPP server,
     // and a Strophe `connection`.
-    var PubSubStorage = function(id, connection) {
+    var PubSubStorage = function(id, connection, payloadFormat) {
         this.id = id;
         this.connection = connection;
+        this.payloadFormat = payloadFormat || 'json';
     };
 
     // Attach methods to **PubSubStorage**.
@@ -24,9 +25,8 @@
         // **create** publishes to the node the model in JSON format.
         //Resolves by setting the `id` on the item and returning it.
         create: function(model) {
-            var d = $.Deferred(), res = {},
-                entry = $build('entry').t(JSON.stringify(model.toJSON())).tree();
-            this.connection.PubSub.publish(this.id, entry)
+            var d = $.Deferred(), res = {};
+            this._publish(this.id, model)
                 .done(function (id) {
                     res[model.idAttribute] = id;
                     d.resolve(res);
@@ -38,9 +38,8 @@
         // **update** a model by re-publishing it on the node.
         // Resolves with no result as under no circumstances the server will change any attributes.
         update: function(model) {
-            var d = $.Deferred(),
-                entry = $build('entry').t(JSON.stringify(model.toJSON())).tree();
-            this.connection.PubSub.publish(this.id, entry, model.id)
+            var d = $.Deferred();
+            this._publish(this.id, model, model.id)
                 .done(function () { d.resolve(); })
                 .fail(d.reject);
             return d.promise();
@@ -84,6 +83,17 @@
         // Resolves by returning the `iq` response.
         destroy: function(model) {
             return this.connection.PubSub.deleteItem(this.id, model.id);
+        },
+        
+        // Publish in particular format
+        _publish: function(node, model, item_id) {
+            if (this.payloadFormat === 'atom') {
+                return this.connection.PubSub.publishAtom(node, model.toJSON(), item_id)
+            }
+            else {
+                var entry = $build('entry').t(JSON.stringify(model.toJSON())).tree();
+                return this.connection.PubSub.publish(node, entry, item_id)
+            }
         }
 
     });
