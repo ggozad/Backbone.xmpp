@@ -122,6 +122,27 @@
             expect(successHandler).toHaveBeenCalledWith({count: 3});
             expect(errorHandler).wasNotCalled();
         });
+        
+        it("returns the model's attributes that have changed on the node when an existing model is fetched and sync() is called with a 'read' using atom format", function () {
+            node = new PubSubStorage('node', connection, 'atom');
+            spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
+                var d = $.Deferred();
+                expect(nodeid).toEqual('node');
+                expect(options.item_ids).toEqual(['foo']);
+                response = atom;
+                d.resolve([response]);
+                return d.promise();
+            });
+            model = new Model({id: 'foo', content: 'Hello world', updated: '2012-07-19T14:02:07Z'});
+            model.node = node;
+            p = model.fetch();
+            p.done(successHandler);
+            p.fail(errorHandler);
+            // TODO: Shouldn't the updated timestamp be changed and thus be in here too?
+            // TODO: Count should be an int really...
+            expect(successHandler).toHaveBeenCalledWith({count: '3'});
+            expect(errorHandler).wasNotCalled();
+        });
 
         it("returns all models on the node when a collection is fetched and sync() is called with a 'read'", function () {
             spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
@@ -163,6 +184,7 @@
             p = collection.fetch();
             p.done(successHandler);
             p.fail(errorHandler);
+            // TODO: Count should be an int really...
             expect(successHandler).toHaveBeenCalledWith(
                 [{updated: '2012-07-19T14:02:07Z', content: 'Hello world', count: '3'},
                 {updated: '2012-07-19T14:02:07Z', content: 'Bye bye world', count: '4'}]);

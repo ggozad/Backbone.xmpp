@@ -48,11 +48,11 @@
         // **getItem** retrieves a model from the node by `id`.
         // Resolves by returning the attributes of the model that are different and their values.
         getItem: function(model) {
-            var d = $.Deferred();
+            var d = $.Deferred(), that = this;
             this.connection.PubSub.items(this.id, {item_ids: [model.id]})
                 .done(function (item) {
                     var updated = {},
-                        attrs = JSON.parse($('entry', item).text());
+                        attrs = that._parse(item);
                     _.each(attrs, function (value, key) {
                         if (model.get(key) !== value) updated[key] = value;
                     });
