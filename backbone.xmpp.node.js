@@ -31,9 +31,7 @@
         initialize: function (models, options) {
             options = options || {};
             if (options.id && options.connection) {
-                this.node = new PubSubStorage(options.id, options.connection);
-                options.connection.PubSub.on('xmpp:pubsub:item-published:' + options.id, this.onItemPublished, this);
-                options.connection.PubSub.on('xmpp:pubsub:item-deleted:' + options.id, this.onItemDeleted, this);
+		this.setNode(options.id, options.connection);
             }
         },
 		
