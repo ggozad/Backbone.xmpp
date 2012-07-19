@@ -36,6 +36,10 @@
         },
 		
         setNode: function(id, connection) {
+            if (this.node) {
+                connection.PubSub.off('xmpp:pubsub:item-published:' + this.node.id, this.onItemPublished, this);
+                connection.PubSub.off('xmpp:pubsub:item-deleted:' + this.node.id, this.onItemDeleted, this);
+            }
             this.node = new PubSubStorage(id, connection);
             connection.PubSub.on('xmpp:pubsub:item-published:' + id, this.onItemPublished, this);
             connection.PubSub.on('xmpp:pubsub:item-deleted:' + id, this.onItemDeleted, this);
