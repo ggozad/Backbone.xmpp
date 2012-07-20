@@ -52,7 +52,7 @@
             this.connection.PubSub.items(this.id, {item_ids: [model.id]})
                 .done(function (item) {
                     var updated = {},
-                        attrs = that._parse(item);
+                        attrs = that._parseItem(item);
                     _.each(attrs, function (value, key) {
                         if (model.get(key) !== value) updated[key] = value;
                     });
@@ -68,8 +68,11 @@
             var d = $.Deferred(), that = this;
             this.connection.PubSub.items(this.id, options)
                 .done(function (items) {
+                    var attrs;
                     d.resolve(_.map(items, function (item) {
-                        return that._parse(item);
+                        attrs = that._parseItem($('entry', item));
+                        attrs.id = $(item).attr('id');
+                        return attrs;
                     }));
                 })
                 .fail(d.reject);
@@ -93,14 +96,12 @@
             }
         },
         
-        _parse: function(item) {
+        _parseItem: function(item) {
             if (this.payloadFormat === 'atom') {
                 return this.connection.PubSub._AtomToJson(item);
             }
             else {
-                var attrs = JSON.parse($('entry', item).text());
-                attrs.id = $(item).attr('id');
-                return attrs;
+                return JSON.parse($(item).text());
             }
         }
 

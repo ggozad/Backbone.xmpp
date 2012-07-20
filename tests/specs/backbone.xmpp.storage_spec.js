@@ -174,8 +174,8 @@
             spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
-                response = [$('<entry xmlns="http://www.w3.org/2005/Atom"><content>Hello world</content><count>3</count><updated>2012-07-19T14:02:07Z</updated></entry>').get(0),
-                    $('<entry xmlns="http://www.w3.org/2005/Atom"><content>Bye bye world</content><count>4</count><updated>2012-07-19T14:02:07Z</updated></entry>').get(0)];
+                response = [$('<item><entry xmlns="http://www.w3.org/2005/Atom"><content>Hello world</content><count>3</count><updated>2012-07-19T14:02:07Z</updated></entry></item>').get(0),
+                    $('<item><entry xmlns="http://www.w3.org/2005/Atom"><content>Bye bye world</content><count>4</count><updated>2012-07-19T14:02:07Z</updated></entry></item>').get(0)];
                 d.resolve(response);
                 return d.promise();
             });
