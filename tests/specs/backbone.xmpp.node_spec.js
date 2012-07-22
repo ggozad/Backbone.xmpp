@@ -34,8 +34,8 @@
             expect(items.node.id).toEqual('anode');
             expect(items.node.connection).toEqual(connection);
         });
-        
-        it('pubsub node can be changed after initialization', function () {
+
+        it('can change the pubsub node after initialization', function () {
             items = new Collection([], {id: 'anode', connection: connection});
             expect(items.node.id).toEqual('anode');
             expect(items.node.connection).toEqual(connection);
