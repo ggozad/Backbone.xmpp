@@ -35,6 +35,14 @@
             expect(items.node.connection).toEqual(connection);
         });
 
+        it('can change the pubsub node after initialization', function () {
+            items = new Collection([], {id: 'anode', connection: connection});
+            expect(items.node.id).toEqual('anode');
+            expect(items.node.connection).toEqual(connection);
+            items.setNode('anode2', connection);
+            expect(items.node.id).toEqual('anode2');
+        });
+
         it('adds an item to index 0 of the collection upon receiving an PEP notification on a non-existing item and fires the "add" event.', function () {
             items = new PubSubNode([{id: 'xxx', title: 'Old entry'}], {id: 'anode', connection: connection});
             message = $msg({from: connection.PubSub.service, to: connection.jid})
