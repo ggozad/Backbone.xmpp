@@ -76,7 +76,8 @@ var MyCollection = PubSubNode.extend({
 var mycollection = new MyCollection([], {id: 'mymodels', connection: connection});
 ```
 
-Note that passing `options` to initialize with `id` and `connection` will initialize the `node` as well as setup event handling.
+Passing `options` to initialize with `id` and `connection` will initialize the `node` as well as setup event handling. You can also specify the node later, or even change it by calling `setNode`, i.e. `mycollection.setNode('mymodels', connection);`.
+
 
 ## API documentation
 
