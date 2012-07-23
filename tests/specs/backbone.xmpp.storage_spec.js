@@ -42,7 +42,7 @@
             expect(errorHandler).wasNotCalled();
             expect(model.id).toEqual('foo');
         });
-        
+
         it('publishes a model to the node as atom when a new model is saved and sync() is called with a "create"', function () {
             node = new PubSubStorage('node', connection, 'atom');
             json.updated = '2012-07-19T14:02:07Z';
@@ -81,7 +81,7 @@
             expect(successHandler).toHaveBeenCalledWith();
             expect(errorHandler).wasNotCalled();
         });
-        
+
         it('publishes a model to the node as atom when an existing model is saved and sync() is called with a "update"', function () {
             node = new PubSubStorage('node', connection, 'atom');
             json.updated = '2012-07-19T14:02:07Z';
@@ -122,7 +122,7 @@
             expect(successHandler).toHaveBeenCalledWith({count: 3});
             expect(errorHandler).wasNotCalled();
         });
-        
+
         it("returns the model's attributes that have changed on the node when an existing model is fetched and sync() is called with a 'read' using atom format", function () {
             node = new PubSubStorage('node', connection, 'atom');
             spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
@@ -140,7 +140,7 @@
             p.fail(errorHandler);
             // TODO: Shouldn't the updated timestamp be changed and thus be in here too?
             // TODO: Count should be an int really...
-            expect(successHandler).toHaveBeenCalledWith({count: '3'});
+            expect(successHandler).toHaveBeenCalledWith({count: 3});
             expect(errorHandler).wasNotCalled();
         });
 
@@ -168,7 +168,7 @@
                 {id: 'bar', content: 'Bye bye world', count: 4}]);
             expect(errorHandler).wasNotCalled();
         });
-        
+
         it("returns all models on the node when an atom formatted collection is fetched and sync() is called with a 'read'", function () {
             node = new PubSubStorage('node', connection, 'atom');
             spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
@@ -184,10 +184,10 @@
             p = collection.fetch();
             p.done(successHandler);
             p.fail(errorHandler);
-            // TODO: Count should be an int really...
+
             expect(successHandler).toHaveBeenCalledWith(
-                [{updated: '2012-07-19T14:02:07Z', content: 'Hello world', count: '3'},
-                {updated: '2012-07-19T14:02:07Z', content: 'Bye bye world', count: '4'}]);
+                [{updated: '2012-07-19T14:02:07Z', content: 'Hello world', count: 3},
+                {updated: '2012-07-19T14:02:07Z', content: 'Bye bye world', count: 4}]);
             expect(errorHandler).wasNotCalled();
         });
 
