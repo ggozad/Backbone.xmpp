@@ -58,7 +58,7 @@
 
             d.promise().done(function () {
                 existing = self.get(item.id),
-                json = JSON.parse($(payload).text());
+                json = self.node.parseItem(payload);
                 if (existing) {
                     self.remove(existing, {silent: true});
                     self.add(existing, {at: 0, silent: true});
