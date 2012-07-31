@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>backbone.xmpp.node.js</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  <div class='section'>
+    <div class='docs'><h1>backbone.xmpp.node.js</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Backbone XMPP PubSub Storage v0.3</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>(c) 2012 Yiorgis Gozadinos.
+   Backbone.xmpp is distributed under the MIT license.
+   http://github.com/ggozad/Backbone.xmpp</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>A simple model/collection using <strong>Backbone.xmpp.storage</strong> and supporting XMPP
+notifications. Can be used to base your models upon.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">Backbone</span><span class="p">,</span> <span class="nx">Strophe</span><span class="p">,</span> <span class="nx">PubSubStorage</span><span class="p">)</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>PubSub Item</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">PubSubItem</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+
+        <span class="nx">sync</span><span class="o">:</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">xmppSync</span>
+
+    <span class="p">});</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>PubSub Items collection</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">PubSubNode</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+
+        <span class="nx">model</span><span class="o">:</span> <span class="nx">PubSubItem</span><span class="p">,</span>
+        <span class="nx">node</span><span class="o">:</span> <span class="kc">null</span><span class="p">,</span>
+        <span class="nx">sync</span><span class="o">:</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">xmppSync</span><span class="p">,</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p><strong>initialize</strong> expects the id of the node to be passed in <code>options</code>
+as well as the Strophe connection.
+If you do not know it ahead you should add the <code>node</code> attribute and
+subscribe to the XMPP events manually.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nx">initialize</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">models</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">options</span> <span class="o">=</span> <span class="nx">options</span> <span class="o">||</span> <span class="p">{};</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">id</span> <span class="o">&amp;&amp;</span> <span class="nx">options</span><span class="p">.</span><span class="nx">connection</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">setNode</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">connection</span><span class="p">,</span> <span class="nx">options</span><span class="p">.</span><span class="nx">payloadFormat</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+
+        <span class="nx">setNode</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">connection</span><span class="p">,</span> <span class="nx">format</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">node</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;xmpp:pubsub:item-published:&#39;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">node</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onItemPublished</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+                <span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="s1">&#39;xmpp:pubsub:item-deleted:&#39;</span> <span class="o">+</span> <span class="k">this</span><span class="p">.</span><span class="nx">node</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onItemDeleted</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">node</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PubSubStorage</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">connection</span><span class="p">,</span> <span class="nx">format</span><span class="p">);</span>
+            <span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;xmpp:pubsub:item-published:&#39;</span> <span class="o">+</span> <span class="nx">id</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onItemPublished</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+            <span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;xmpp:pubsub:item-deleted:&#39;</span> <span class="o">+</span> <span class="nx">id</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">onItemDeleted</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+        <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p><strong>onItemPublished</strong> is a subscriber to the <code>xmpp:pubsub:item-published</code> event.
+When a model has been pushed to the server from a different client, it will be
+received and added automatically to the collection, triggering an <code>add</code> event.
+If the model already existed it will be updated triggering a <code>change</code> event.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nx">onItemPublished</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">payload</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">entry</span><span class="p">,</span>
+                <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">,</span>
+                <span class="nx">d</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">(),</span>
+                <span class="nx">existing</span><span class="p">,</span>
+                <span class="nx">json</span><span class="p">;</span>
+
+            <span class="nx">d</span><span class="p">.</span><span class="nx">promise</span><span class="p">().</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+                <span class="nx">existing</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">),</span>
+                <span class="nx">json</span> <span class="o">=</span> <span class="nx">self</span><span class="p">.</span><span class="nx">node</span><span class="p">.</span><span class="nx">parseItem</span><span class="p">(</span><span class="nx">payload</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nx">existing</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">self</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">existing</span><span class="p">,</span> <span class="p">{</span><span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
+                    <span class="nx">self</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">existing</span><span class="p">,</span> <span class="p">{</span><span class="nx">at</span><span class="o">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">silent</span><span class="o">:</span> <span class="kc">true</span><span class="p">});</span>
+                    <span class="nx">existing</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="nx">json</span><span class="p">);</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="nx">json</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">;</span>
+                    <span class="nx">self</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">json</span><span class="p">,</span> <span class="p">{</span><span class="nx">at</span><span class="o">:</span> <span class="mi">0</span><span class="p">});</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nx">payload</span><span class="p">)</span> <span class="p">{</span>
+                <span class="nx">d</span><span class="p">.</span><span class="nx">resolve</span><span class="p">();</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">node</span><span class="p">.</span><span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">items</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">node</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="p">{</span><span class="nx">item_ids</span><span class="o">:</span> <span class="p">[</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">]})</span>
+                    <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">payload</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="nx">res</span><span class="p">);</span>
+                        <span class="nx">d</span><span class="p">.</span><span class="nx">resolve</span><span class="p">();</span>
+                    <span class="p">});</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+
+        <span class="nx">onItemDeleted</span><span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">item</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">this</span><span class="p">.</span><span class="nx">remove</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+    <span class="p">});</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">PubSubItem</span> <span class="o">=</span> <span class="nx">PubSubItem</span><span class="p">;</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">PubSubNode</span> <span class="o">=</span> <span class="nx">PubSubNode</span><span class="p">;</span>
+
+<span class="p">})(</span><span class="k">this</span><span class="p">.</span><span class="nx">jQuery</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">_</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">Backbone</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">Strophe</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">PubSubStorage</span><span class="p">);</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

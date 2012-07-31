@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>backbone.xmpp.storage.js</title>
+  <link rel="stylesheet" href="pycco.css">
+</head>
+<body>
+<div id="background"></div>
+<div id='container'>
+  <div class='section'>
+    <div class='docs'><h1>backbone.xmpp.storage.js</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Backbone XMPP PubSub Storage v0.3</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>(c) 2012 Yiorgis Gozadinos.
+   Backbone.xmpp is distributed under the MIT license.
+   http://github.com/ggozad/Backbone.xmpp</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      <p>A simple module to replace <strong>Backbone.sync</strong> with <em>XMPP PubSub</em>-based
+persistence.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">$</span><span class="p">,</span> <span class="nx">_</span><span class="p">,</span> <span class="nx">Backbone</span><span class="p">,</span> <span class="nx">Strophe</span><span class="p">)</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>A PubSub node acting as storage.
+Create it with the <code>id</code> the node has on the XMPP server,
+and a Strophe <code>connection</code>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="kd">var</span> <span class="nx">PubSubStorage</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">id</span><span class="p">,</span> <span class="nx">connection</span><span class="p">,</span> <span class="nx">payloadFormat</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">id</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">connection</span> <span class="o">=</span> <span class="nx">connection</span><span class="p">;</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">payloadFormat</span> <span class="o">=</span> <span class="nx">payloadFormat</span> <span class="o">||</span> <span class="s1">&#39;json&#39;</span><span class="p">;</span>
+    <span class="p">};</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>Attach methods to <strong>PubSubStorage</strong>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nx">_</span><span class="p">.</span><span class="nx">extend</span><span class="p">(</span><span class="nx">PubSubStorage</span><span class="p">.</span><span class="nx">prototype</span><span class="p">,</span> <span class="p">{</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p><strong>create</strong> publishes to the node the model in JSON format.
+Resolves by setting the <code>id</code> on the item and returning it.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nx">create</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">(),</span> <span class="nx">res</span> <span class="o">=</span> <span class="p">{};</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">_publish</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">model</span><span class="p">)</span>
+                <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">id</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">res</span><span class="p">[</span><span class="nx">model</span><span class="p">.</span><span class="nx">idAttribute</span><span class="p">]</span> <span class="o">=</span> <span class="nx">id</span><span class="p">;</span>
+                    <span class="nx">d</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span>
+                <span class="p">})</span>
+                <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">reject</span><span class="p">);</span>
+            <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+        <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      <p><strong>update</strong> a model by re-publishing it on the node.
+Resolves with no result as under no circumstances the server will change any attributes.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nx">update</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">();</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">_publish</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">model</span><span class="p">.</span><span class="nx">id</span><span class="p">)</span>
+                <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">d</span><span class="p">.</span><span class="nx">resolve</span><span class="p">();</span> <span class="p">})</span>
+                <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">reject</span><span class="p">);</span>
+            <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+        <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-7'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-7'>#</a>
+      </div>
+      <p><strong>getItem</strong> retrieves a model from the node by <code>id</code>.
+Resolves by returning the attributes of the model that are different and their values.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nx">getItem</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">(),</span> <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">items</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="p">{</span><span class="nx">item_ids</span><span class="o">:</span> <span class="p">[</span><span class="nx">model</span><span class="p">.</span><span class="nx">id</span><span class="p">]})</span>
+                <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="kd">var</span> <span class="nx">updated</span> <span class="o">=</span> <span class="p">{},</span>
+                        <span class="nx">attrs</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">parseItem</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+                    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="nx">attrs</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">value</span><span class="p">,</span> <span class="nx">key</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">key</span><span class="p">)</span> <span class="o">!==</span> <span class="nx">value</span><span class="p">)</span> <span class="nx">updated</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="o">=</span> <span class="nx">value</span><span class="p">;</span>
+                    <span class="p">});</span>
+                    <span class="nx">d</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">updated</span><span class="p">);</span>
+                <span class="p">})</span>
+                <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">reject</span><span class="p">);</span>
+            <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+        <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-8'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-8'>#</a>
+      </div>
+      <p><strong>getItems</strong> retrieves all models from the node.
+Resolves by returning a list of all its models in JSON format.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nx">getItems</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">d</span> <span class="o">=</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">(),</span> <span class="nx">that</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+            <span class="k">this</span><span class="p">.</span><span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">items</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span>
+                <span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="kd">var</span> <span class="nx">attrs</span><span class="p">,</span>
+                        <span class="nx">items</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">rsm</span> <span class="o">?</span> <span class="nx">data</span><span class="p">.</span><span class="nx">items</span> <span class="o">:</span> <span class="nx">data</span><span class="p">;</span>
+                    <span class="nx">d</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">_</span><span class="p">.</span><span class="nx">map</span><span class="p">(</span><span class="nx">items</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="nx">attrs</span> <span class="o">=</span> <span class="nx">that</span><span class="p">.</span><span class="nx">parseItem</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="s1">&#39;entry&#39;</span><span class="p">,</span> <span class="nx">item</span><span class="p">));</span>
+                        <span class="nx">attrs</span><span class="p">.</span><span class="nx">id</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="nx">item</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">);</span>
+                        <span class="k">return</span> <span class="nx">attrs</span><span class="p">;</span>
+                    <span class="p">}),</span> <span class="nx">data</span><span class="p">.</span><span class="nx">rsm</span><span class="p">);</span>
+                <span class="p">})</span>
+                <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">reject</span><span class="p">);</span>
+            <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">promise</span><span class="p">();</span>
+        <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-9'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-9'>#</a>
+      </div>
+      <p><strong>destroy</strong> deletes the item correcsponding to the <code>model</code> from the node.
+Resolves by returning the <code>iq</code> response.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nx">destroy</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">deleteItem</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">model</span><span class="p">.</span><span class="nx">id</span><span class="p">);</span>
+        <span class="p">},</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-10'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      <p>Publish in particular format</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="nx">_publish</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">node</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">item_id</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">payloadFormat</span> <span class="o">===</span> <span class="s1">&#39;atom&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">publishAtom</span><span class="p">(</span><span class="nx">node</span><span class="p">,</span> <span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">(),</span> <span class="nx">item_id</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="p">{</span>
+                <span class="kd">var</span> <span class="nx">entry</span> <span class="o">=</span> <span class="nx">$build</span><span class="p">(</span><span class="s1">&#39;entry&#39;</span><span class="p">).</span><span class="nx">t</span><span class="p">(</span><span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">toJSON</span><span class="p">())).</span><span class="nx">tree</span><span class="p">();</span>
+                <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">publish</span><span class="p">(</span><span class="nx">node</span><span class="p">,</span> <span class="nx">entry</span><span class="p">,</span> <span class="nx">item_id</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">},</span>
+
+        <span class="nx">parseItem</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">item</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">payloadFormat</span> <span class="o">===</span> <span class="s1">&#39;atom&#39;</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">_AtomToJson</span><span class="p">(</span><span class="nx">item</span><span class="p">);</span>
+            <span class="p">}</span>
+            <span class="k">else</span> <span class="p">{</span>
+                <span class="k">return</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="nx">item</span><span class="p">).</span><span class="nx">text</span><span class="p">());</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+    <span class="p">});</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      <p><strong>xmppAsync</strong> is the replacement for <strong>sync</strong>. It delegates sync operations
+to the model or collection's <code>node</code> property, which should be an instance
+of <strong>PubSubStorage</strong>.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="nx">Backbone</span><span class="p">.</span><span class="nx">xmppSync</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">method</span><span class="p">,</span> <span class="nx">model</span><span class="p">,</span> <span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="kd">var</span> <span class="nx">p</span><span class="p">,</span>
+            <span class="nx">node</span> <span class="o">=</span> <span class="nx">model</span><span class="p">.</span><span class="nx">node</span> <span class="o">||</span> <span class="p">(</span><span class="nx">model</span><span class="p">.</span><span class="nx">collection</span> <span class="o">&amp;&amp;</span> <span class="nx">model</span><span class="p">.</span><span class="nx">collection</span><span class="p">.</span><span class="nx">node</span><span class="p">);</span>
+
+        <span class="nx">options</span> <span class="o">=</span> <span class="nx">options</span> <span class="o">||</span> <span class="p">{};</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      <p>If there is no node, fail directly, somebody did not read the docs.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">node</span><span class="p">)</span> <span class="k">return</span> <span class="nx">$</span><span class="p">.</span><span class="nx">Deferred</span><span class="p">().</span><span class="nx">reject</span><span class="p">().</span><span class="nx">promise</span><span class="p">();</span>
+
+        <span class="k">switch</span> <span class="p">(</span><span class="nx">method</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="s2">&quot;read&quot;</span><span class="o">:</span>    <span class="nx">p</span> <span class="o">=</span> <span class="k">typeof</span> <span class="nx">model</span><span class="p">.</span><span class="nx">id</span> <span class="o">!==</span> <span class="s1">&#39;undefined&#39;</span> <span class="o">?</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getItem</span><span class="p">(</span><span class="nx">model</span><span class="p">)</span> <span class="o">:</span> <span class="nx">node</span><span class="p">.</span><span class="nx">getItems</span><span class="p">(</span><span class="nx">options</span><span class="p">);</span> <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="s2">&quot;create&quot;</span><span class="o">:</span>  <span class="nx">p</span> <span class="o">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="nx">model</span><span class="p">);</span> <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="s2">&quot;update&quot;</span><span class="o">:</span>  <span class="nx">p</span> <span class="o">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">update</span><span class="p">(</span><span class="nx">model</span><span class="p">);</span> <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="s2">&quot;delete&quot;</span><span class="o">:</span>  <span class="nx">p</span> <span class="o">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span><span class="nx">model</span><span class="p">);</span> <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
+      </div>
+      <p>Fallback for old-style callbacks.</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">success</span><span class="p">)</span> <span class="nx">p</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">success</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">error</span><span class="p">)</span> <span class="nx">p</span><span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">error</span><span class="p">);</span>
+
+        <span class="k">return</span> <span class="nx">p</span><span class="p">;</span>
+    <span class="p">};</span>
+
+    <span class="k">this</span><span class="p">.</span><span class="nx">PubSubStorage</span> <span class="o">=</span> <span class="nx">PubSubStorage</span><span class="p">;</span>
+
+<span class="p">})(</span><span class="k">this</span><span class="p">.</span><span class="nx">jQuery</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">_</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">Backbone</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">Strophe</span><span class="p">);</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>
