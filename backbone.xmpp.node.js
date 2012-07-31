@@ -1,4 +1,4 @@
-//    Backbone XMPP PubSub Storage v0.2
+//    Backbone XMPP PubSub Storage v0.3
 
 //    (c) 2012 Yiorgis Gozadinos.
 //    Backbone.xmpp is distributed under the MIT license.
@@ -34,7 +34,7 @@
                 this.setNode(options.id, options.connection, options.payloadFormat);
             }
         },
-		
+
         setNode: function(id, connection, format) {
             if (this.node) {
                 connection.PubSub.off('xmpp:pubsub:item-published:' + this.node.id, this.onItemPublished, this);
