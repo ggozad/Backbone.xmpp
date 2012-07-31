@@ -165,8 +165,36 @@
             p.fail(errorHandler);
             expect(successHandler).toHaveBeenCalledWith(
                 [{id: 'foo', content: 'Hello world', count: 3},
-                {id: 'bar', content: 'Bye bye world', count: 4}]);
+                {id: 'bar', content: 'Bye bye world', count: 4}], undefined);
             expect(errorHandler).wasNotCalled();
+        });
+
+        it("also returns the Result Set Management info as an object literal if it is available", function () {
+            spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
+                var d = $.Deferred();
+                expect(nodeid).toEqual('node');
+                response = {
+                    items: [
+                        $build('item', {id: 'foo'})
+                            .c('entry')
+                            .t(JSON.stringify({content: 'Hello world', count: 3})).tree(),
+                        $build('item', {id: 'bar'})
+                            .c('entry')
+                            .t(JSON.stringify({content: 'Bye bye world', count: 4})).tree()],
+                    rsm: {first: 'first', last: 'last', count: 5}
+                };
+                d.resolve(response);
+                return d.promise();
+            });
+            collection = new Collection();
+            collection.node = node;
+            p = collection.sync('read', collection);
+            p.done(successHandler);
+            p.fail(errorHandler);
+            expect(successHandler).toHaveBeenCalledWith(
+                [{id: 'foo', content: 'Hello world', count: 3},
+                 {id: 'bar', content: 'Bye bye world', count: 4}],
+                {first: 'first', last: 'last', count: 5});
         });
 
         it("returns all models on the node when an atom formatted collection is fetched and sync() is called with a 'read'", function () {
@@ -174,8 +202,10 @@
             spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
-                response = [$('<item><entry xmlns="http://www.w3.org/2005/Atom"><content>Hello world</content><count>3</count><updated>2012-07-19T14:02:07Z</updated></entry></item>').get(0),
-                    $('<item><entry xmlns="http://www.w3.org/2005/Atom"><content>Bye bye world</content><count>4</count><updated>2012-07-19T14:02:07Z</updated></entry></item>').get(0)];
+                response = [
+                    $('<item><entry xmlns="http://www.w3.org/2005/Atom"><content>Hello world</content><count>3</count><updated>2012-07-19T14:02:07Z</updated></entry></item>').get(0),
+                    $('<item><entry xmlns="http://www.w3.org/2005/Atom"><content>Bye bye world</content><count>4</count><updated>2012-07-19T14:02:07Z</updated></entry></item>').get(0)
+                ];
                 d.resolve(response);
                 return d.promise();
             });
@@ -187,7 +217,7 @@
 
             expect(successHandler).toHaveBeenCalledWith(
                 [{updated: '2012-07-19T14:02:07Z', content: 'Hello world', count: 3},
-                {updated: '2012-07-19T14:02:07Z', content: 'Bye bye world', count: 4}]);
+                {updated: '2012-07-19T14:02:07Z', content: 'Bye bye world', count: 4}], undefined);
             expect(errorHandler).wasNotCalled();
         });
 

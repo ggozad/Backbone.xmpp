@@ -78,6 +78,23 @@ var mycollection = new MyCollection([], {id: 'mymodels', connection: connection}
 
 Passing `options` to initialize with `id` and `connection` will initialize the `node` as well as setup event handling. You can also specify the node later, or even change it by calling `setNode`, i.e. `mycollection.setNode('mymodels', connection);`.
 
+## Partial fetching with RSM
+
+If your server supports [Result Set Management](http://xmpp.org/extensions/xep-0059.html) with PubSub you can do partial incremental fetches, which is useful if you do not want to fetch the entire node. For example,
+
+```javascript
+var last, p = mycollection.fetch({rsm: {max: 50}});
+p.done(function (data, rsm) {
+    last = rsm.last;
+});
+...
+// Later do
+mycollection.fetch({rsm: {after: last, max: 50}});
+
+```
+
+will fetch the first 50 items initially and save the `rsm` object literal to `last`. Later it will retrieve another 50 items starting from after `last`.
+
 
 ## API documentation
 
