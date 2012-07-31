@@ -1,0 +1,152 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Backbone.xmpp by ggozad</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Backbone.xmpp</h1>
+        <p>A simple module to replace Backbone.sync with XMPP PubSub-based persistence.</p>
+
+        <p class="view"><a href="https://github.com/ggozad/Backbone.xmpp">View the Project on GitHub <small>ggozad/Backbone.xmpp</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/ggozad/Backbone.xmpp/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/ggozad/Backbone.xmpp/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/ggozad/Backbone.xmpp">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Backbone XMPP Pub-Sub Storage</h1>
+
+<p>An alternative storage layer for syncing Backbone models/collection with XMPP Pub-Sub nodes</p>
+
+<h2>Introduction</h2>
+
+<p><a href="http://documentcloud.github.com/backbone">Backbone</a> makes it easy to support alternative storage layers to its default RESTful JSON requests.
+This package provides such a layer on top of <a href="http://xmpp.org/extensions/xep-0060.html">XMPP Publish-Subscribe</a> through mapping <code>Backbone.Collection</code> instances to Pub-Sub nodes and their <code>Backbone.Model</code> instances to items of the node. In addition, it provides support for handling real-time XMPP notifications on these nodes, pushing live updates to the collections/models.</p>
+
+<h2>Usage</h2>
+
+<p>In order for a collection to use the storage, override its <code>sync()</code> function and provide an instance of <code>PubSubStorage</code> on the <code>node</code> attribute of the collection, for instance:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">MyCollection</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+    <span class="nx">sync</span><span class="o">:</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">xmppSync</span><span class="p">,</span>
+    <span class="nx">model</span><span class="o">:</span> <span class="nx">MyModel</span><span class="p">,</span>
+    <span class="p">...</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">mycollection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyCollection</span><span class="p">();</span>
+<span class="nx">mycollection</span><span class="p">.</span><span class="nx">node</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PubSubStorage</span><span class="p">(</span><span class="s1">'mymodels'</span><span class="p">,</span> <span class="nx">connection</span><span class="p">);</span>
+</pre></div>
+
+<p>where the arguments <code>'mymodels'</code>, and <code>connection</code> are the node id on your XMPP PubSub server, and Strophe's connection object, respectively.</p>
+
+<p>For models, it is not necessary to specify the node (though you can, on the rare occasion where you sync a model <em>without</em> a collection), i.e. the following is sufficient:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">MyModel</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+    <span class="nx">sync</span><span class="o">:</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">xmppSync</span><span class="p">,</span>
+    <span class="p">...</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">mymodel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyModel</span><span class="p">();</span>
+<span class="nx">mycollection</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="nx">mymodel</span><span class="p">);</span>
+</pre></div>
+
+<p>That's it! Note that the storage will not take care of creating, configuring the node or managing subscriptions. This should be typically done on the server. However, if you wish to do so client-side, you can by means of utilising the bundled <a href="http://ggozad.github.com/strophe.plugins">PubSub plugin</a> for <a href="http://strophe.im/strophejs">Strophe</a>.</p>
+
+<h2>Notifications</h2>
+
+<p>If your XMPP server is configured to support PEP-notifications and the user connected is subscribed to the node, you can push real-time updates to your models/collections.</p>
+
+<p>Events are fired by the PubSub Strophe plugin, and you can bind to these in your collections. For example, in the <code>initialize()</code> of your collection's view, you can do</p>
+
+<div class="highlight"><pre><span class="nx">connection</span><span class="p">.</span><span class="nx">PubSub</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span>
+    <span class="s1">'xmpp:pubsub:item-published:mymodels'</span><span class="p">,</span>
+    <span class="k">this</span><span class="p">.</span><span class="nx">itemPublished</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</pre></div>
+
+<p>in order to bind the <code>xmpp:pubsub:item-published</code> event of the <code>mycollection</code> node to the <code>itemPublished</code> function.</p>
+
+<p>There are four relevant events fired by the <code>PubSub</code> module:</p>
+
+<ul>
+<li>
+<code>xmpp:pubsub:item-published</code> will fire whenever an item is added or updated on a PubSub node. The handler will receive an object with the folliwing attributes:<code>node</code> (the id of the node), <code>id</code> (the id of the item) and <code>entry</code> (the entry containing the XML payload). Bind to this event if you want a central delegation of PubSub events.</li>
+<li>
+<code>xmpp:pubsub:item-published:*node_id*</code> is the same as <code>xmpp:pubsub:item-published</code> except it fires for items of a specific node only. The parameters it passes to the handler are also the same, omitting of course <code>node</code>.</li>
+<li>
+<code>xmpp:pubsub:item-deleted</code> will fire whenever an item is deleted from a PubSub node. Parameters passed are <code>node</code> and <code>id</code>.</li>
+<li>
+<code>xmpp:pubsub:item-deleted:*node_id*</code> same as above, but will only fire if the item belongs to the node with id <code>*node_id*</code>.</li>
+</ul><h2>Base collection/model</h2>
+
+<p>Base collection/models using the Pub-Sub storage are provided in <code>backbone.xmpp.node.js</code>, namely <code>PubSubNode</code> (the collection) and <code>PubSubItem</code> (the model). These will automatically subscribe to the add/update/delete XMPP events and will trigger the <code>add</code>, <code>change</code>, <code>remove</code> Backbone events, respectively. You can directly extend from them:</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">MyModel</span> <span class="o">=</span> <span class="nx">PubSubItem</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+    <span class="p">...</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">MyCollection</span> <span class="o">=</span> <span class="nx">PubSubNode</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+    <span class="nx">model</span><span class="o">:</span> <span class="nx">MyModel</span><span class="p">,</span>
+    <span class="p">...</span>
+<span class="p">});</span>
+
+<span class="kd">var</span> <span class="nx">mycollection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">MyCollection</span><span class="p">([],</span> <span class="p">{</span><span class="nx">id</span><span class="o">:</span> <span class="s1">'mymodels'</span><span class="p">,</span> <span class="nx">connection</span><span class="o">:</span> <span class="nx">connection</span><span class="p">});</span>
+</pre></div>
+
+<p>Passing <code>options</code> to initialize with <code>id</code> and <code>connection</code> will initialize the <code>node</code> as well as setup event handling. You can also specify the node later, or even change it by calling <code>setNode</code>, i.e. <code>mycollection.setNode('mymodels', connection);</code>.</p>
+
+<h2>Partial fetching with RSM</h2>
+
+<p>If your server supports <a href="http://xmpp.org/extensions/xep-0059.html">Result Set Management</a> with PubSub you can do partial incremental fetches, which is useful if you do not want to fetch the entire node. For example,</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">last</span><span class="p">,</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">mycollection</span><span class="p">.</span><span class="nx">fetch</span><span class="p">({</span><span class="nx">rsm</span><span class="o">:</span> <span class="p">{</span><span class="nx">max</span><span class="o">:</span> <span class="mi">50</span><span class="p">}});</span>
+<span class="nx">p</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">,</span> <span class="nx">rsm</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">last</span> <span class="o">=</span> <span class="nx">rsm</span><span class="p">.</span><span class="nx">last</span><span class="p">;</span>
+<span class="p">});</span>
+<span class="p">...</span>
+<span class="c1">// Later do</span>
+<span class="nx">mycollection</span><span class="p">.</span><span class="nx">fetch</span><span class="p">({</span><span class="nx">rsm</span><span class="o">:</span> <span class="p">{</span><span class="nx">after</span><span class="o">:</span> <span class="nx">last</span><span class="p">,</span> <span class="nx">max</span><span class="o">:</span> <span class="mi">50</span><span class="p">}});</span>
+</pre></div>
+
+<p>will fetch the first 50 items initially and save the <code>rsm</code> object literal to <code>last</code>. Later it will retrieve another 50 items starting from after <code>last</code>.</p>
+
+<h2>API documentation</h2>
+
+<p>Please refer to the annotated source:</p>
+
+<ul>
+<li><a href="http://ggozad.github.com/Backbone.xmpp/docs/backbone.xmpp.storage.html">backbone.xmpp.storage.js</a></li>
+<li><a href="http://ggozad.github.com/Backbone.xmpp/docs/backbone.xmpp.node.html">backbone.xmpp.node.js</a></li>
+<li><a href="http://ggozad.github.com/strophe.plugins/docs/strophe.pubsub.html">strophe.pubsub.js</a></li>
+<li><a href="http://ggozad.github.com/strophe.plugins/docs/strophe.forms.html">strophe.forms.js</a></li>
+</ul><h2>Demo</h2>
+
+<p>You can watch Backbone.xmpp in action <a href="http://ggozad.com/blog/2012/05/03/a-pub-sub-storage-for-backbone-using-xmpp/">here</a>.</p>
+
+<h2>License</h2>
+
+<p>Backbone.xmpp.storage is Copyright (C) 2012 Yiorgis Gozadinos.
+It is distributed under the MIT license.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/ggozad">ggozad</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
