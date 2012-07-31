@@ -52,7 +52,7 @@
             this.connection.PubSub.items(this.id, {item_ids: [model.id]})
                 .done(function (item) {
                     var updated = {},
-                        attrs = that._parseItem(item);
+                        attrs = that.parseItem(item);
                     _.each(attrs, function (value, key) {
                         if (model.get(key) !== value) updated[key] = value;
                     });
@@ -70,7 +70,7 @@
                 .done(function (items) {
                     var attrs;
                     d.resolve(_.map(items, function (item) {
-                        attrs = that._parseItem($('entry', item));
+                        attrs = that.parseItem($('entry', item));
                         attrs.id = $(item).attr('id');
                         return attrs;
                     }));
@@ -96,7 +96,7 @@
             }
         },
         
-        _parseItem: function(item) {
+        parseItem: function(item) {
             if (this.payloadFormat === 'atom') {
                 return this.connection.PubSub._AtomToJson(item);
             }
