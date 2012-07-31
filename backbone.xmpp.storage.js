@@ -67,13 +67,14 @@
         getItems: function(options) {
             var d = $.Deferred(), that = this;
             this.connection.PubSub.items(this.id, options)
-                .done(function (items) {
-                    var attrs;
+                .done(function (data) {
+                    var attrs,
+                        items = data.rsm ? data.items : data;
                     d.resolve(_.map(items, function (item) {
                         attrs = that.parseItem($('entry', item));
                         attrs.id = $(item).attr('id');
                         return attrs;
-                    }));
+                    }), data.rsm);
                 })
                 .fail(d.reject);
             return d.promise();
@@ -84,7 +85,7 @@
         destroy: function(model) {
             return this.connection.PubSub.deleteItem(this.id, model.id);
         },
-        
+
         // Publish in particular format
         _publish: function(node, model, item_id) {
             if (this.payloadFormat === 'atom') {
@@ -95,7 +96,7 @@
                 return this.connection.PubSub.publish(node, entry, item_id);
             }
         },
-        
+
         parseItem: function(item) {
             if (this.payloadFormat === 'atom') {
                 return this.connection.PubSub._AtomToJson(item);
