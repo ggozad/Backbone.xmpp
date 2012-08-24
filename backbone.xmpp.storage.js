@@ -11,7 +11,7 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['jquery', 'underscore', 'backbone', 'strophe'], function () {
+        define(['jquery', 'underscore', 'backbone', 'strophe'], function ($, _, Backbone, Strophe) {
             return (root.PubSubStorage = factory($, _, Backbone, Strophe));
         });
     } else {
