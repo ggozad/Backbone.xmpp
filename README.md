@@ -105,9 +105,13 @@ Please refer to the annotated source:
 * [strophe.pubsub.js](http://ggozad.github.com/strophe.plugins/docs/strophe.pubsub.html)
 * [strophe.forms.js](http://ggozad.github.com/strophe.plugins/docs/strophe.forms.html)
 
+## AMD loading
+
+Backbone.xmpp will register as an anonymous module if you use [requireJS](http://requirejs.org/).
+
 ## Demo
 
-You can watch Backbone.xmpp in action [here](http://ggozad.com/blog/2012/05/03/a-pub-sub-storage-for-backbone-using-xmpp/).
+Backbone.xmpp is part of [todomvc](http://addyosmani.github.com/todomvc/). A demo is available [here](http://todomvc.crypho.com/).
 
 ## License
 

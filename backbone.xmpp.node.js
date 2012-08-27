@@ -8,19 +8,32 @@
 // A simple model/collection using **Backbone.xmpp.storage** and supporting XMPP
 // notifications. Can be used to base your models upon.
 
-(function ($, _, Backbone, Strophe, PubSubStorage) {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['jquery', 'underscore', 'backbone', 'strophe', 'pubsubstorage'], function ($, _, Backbone, Strophe, PubSubStorage) {
+            return (root.PubSubNode = factory($, _, Backbone, Strophe, PubSubStorage));
+        });
+    } else {
+        // Browser globals
+        root.PubSubNode = factory($, _, Backbone, Strophe, PubSubStorage);
+    }
+
+}(this, function ($, _, Backbone, Strophe, PubSubStorage) {
+
+    var exports = {};
 
     // PubSub Item
-    var PubSubItem = Backbone.Model.extend({
+    exports.PubSubItem = Backbone.Model.extend({
 
         sync: Backbone.xmppSync
 
     });
 
     // PubSub Items collection
-    var PubSubNode = Backbone.Collection.extend({
+    exports.PubSubNode = Backbone.Collection.extend({
 
-        model: PubSubItem,
+        model: exports.PubSubItem,
         node: null,
         sync: Backbone.xmppSync,
 
@@ -89,7 +102,6 @@
 
     });
 
-    this.PubSubItem = PubSubItem;
-    this.PubSubNode = PubSubNode;
+    return exports;
 
-})(this.jQuery, this._, this.Backbone, this.Strophe, this.PubSubStorage);
+}));

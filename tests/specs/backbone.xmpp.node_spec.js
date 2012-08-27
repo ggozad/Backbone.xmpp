@@ -1,13 +1,13 @@
-(function ($, _, Backbone, Strophe, jasmine, xmppMocker, PubSubStorage, PubSubItem, PubSubNode) {
+(function ($, _, Backbone, Strophe, jasmine, xmppMocker, PubSubStorage, PubSubNode) {
 
     describe('PubSubItem/PubSubNode model/collection', function () {
 
         var connection, response, p, successHandler, errorHandler, json, entry,
             item, items;
 
-        var Model = PubSubItem.extend({
+        var Model = PubSubNode.PubSubItem.extend({
             }),
-            Collection = PubSubNode.extend({
+            Collection = PubSubNode.PubSubNode.extend({
                 model: Model
             });
 
@@ -44,7 +44,7 @@
         });
 
         it('adds an item to index 0 of the collection upon receiving an PEP notification on a non-existing item and fires the "add" event.', function () {
-            items = new PubSubNode([{id: 'xxx', title: 'Old entry'}], {id: 'anode', connection: connection});
+            items = new PubSubNode.PubSubNode([{id: 'xxx', title: 'Old entry'}], {id: 'anode', connection: connection});
             message = $msg({from: connection.PubSub.service, to: connection.jid})
                 .c('event', {xmlns: Strophe.NS.PUBSUB_EVENT})
                 .c('items', {node: 'anode'})
@@ -69,7 +69,7 @@
                 d.resolve(response);
                 return d.promise();
             });
-            items = new PubSubNode([{id: 'xxx', title: 'Old entry'}], {id: 'anode', connection: connection});
+            items = new PubSubNode.PubSubNode([{id: 'xxx', title: 'Old entry'}], {id: 'anode', connection: connection});
             message = $msg({from: connection.PubSub.service, to: connection.jid})
                 .c('event', {xmlns: Strophe.NS.PUBSUB_EVENT})
                 .c('items', {node: 'anode'})
@@ -87,7 +87,7 @@
         });
 
         it('updates an item in the collection upon receiving an PEP notification on an existing item and fires the "change" event only.', function () {
-            items = new PubSubNode([{id: 'xxx', title: 'Old entry'}], {id: 'anode', connection: connection});
+            items = new PubSubNode.PubSubNode([{id: 'xxx', title: 'Old entry'}], {id: 'anode', connection: connection});
             json.id = 'item_id';
             items.add(json);
             json.title = 'An updated entry';
@@ -112,7 +112,7 @@
         });
 
         it('removes an item from the collection upon receiving an PEP notification on an existing item', function () {
-            items = new PubSubNode([], {id: 'anode', connection: connection});
+            items = new PubSubNode.PubSubNode([], {id: 'anode', connection: connection});
             json.id = 'item_id';
             items.add(json);
             entry = $build('entry').t(JSON.stringify(json)).tree();
@@ -131,4 +131,4 @@
 
     });
 })(this.jQuery, this._, this.Backbone, this.Strophe, this.jasmine, this.xmppMocker,
-   this.PubSubStorage, this.PubSubItem, this.PubSubNode);
+   this.PubSubStorage, this.PubSubNode);
