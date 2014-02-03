@@ -27,7 +27,7 @@
         },
 
         mockConnection: function (callback) {
-            var c = new Strophe.Connection();
+            var c = new Strophe.Connection('');
             c.connect_callback = callback;
             c.authenticated = true;
             c.connected = true;
