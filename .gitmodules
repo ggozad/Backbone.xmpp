@@ -1,3 +1,0 @@
-[submodule "strophe.plugins"]
-	path = strophe.plugins
-	url = https://github.com/ggozad/strophe.plugins.git
