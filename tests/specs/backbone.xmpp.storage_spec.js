@@ -26,7 +26,7 @@
         });
 
         it('publishes a model to the node when an new model is saved and sync() is called with a "create"', function () {
-            spyOn(connection.PubSub, 'publish').andCallFake(function (nodeid, entry) {
+            spyOn(connection.PubSub, 'publish').and.callFake(function (nodeid, entry) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
                 expect(entry.textContent).toEqual(JSON.stringify(json));
@@ -39,14 +39,14 @@
             p.done(successHandler);
             p.fail(errorHandler);
             expect(successHandler).toHaveBeenCalledWith({id: 'foo'});
-            expect(errorHandler).wasNotCalled();
+            expect(errorHandler).not.toHaveBeenCalled();
             expect(model.id).toEqual('foo');
         });
 
         it('publishes a model to the node as atom when a new model is saved and sync() is called with a "create"', function () {
             node = new PubSubStorage('node', connection, 'atom');
             json.updated = '2012-07-19T14:02:07Z';
-            spyOn(connection.PubSub, 'publish').andCallFake(function (nodeid, entry) {
+            spyOn(connection.PubSub, 'publish').and.callFake(function (nodeid, entry) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
                 expect(entry.textContent).toEqual(atom.textContent);
@@ -59,12 +59,12 @@
             p.done(successHandler);
             p.fail(errorHandler);
             expect(successHandler).toHaveBeenCalledWith({id: 'foo'});
-            expect(errorHandler).wasNotCalled();
+            expect(errorHandler).not.toHaveBeenCalled();
             expect(model.id).toEqual('foo');
         });
 
         it('publishes a model to the node when an existing model is saved and sync() is called with a "update"', function () {
-            spyOn(connection.PubSub, 'publish').andCallFake(function (nodeid, entry, itemid) {
+            spyOn(connection.PubSub, 'publish').and.callFake(function (nodeid, entry, itemid) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
                 expect(itemid).toEqual('foo');
@@ -79,13 +79,13 @@
             p.done(successHandler);
             p.fail(errorHandler);
             expect(successHandler).toHaveBeenCalledWith();
-            expect(errorHandler).wasNotCalled();
+            expect(errorHandler).not.toHaveBeenCalled();
         });
 
         it('publishes a model to the node as atom when an existing model is saved and sync() is called with a "update"', function () {
             node = new PubSubStorage('node', connection, 'atom');
             json.updated = '2012-07-19T14:02:07Z';
-            spyOn(connection.PubSub, 'publish').andCallFake(function (nodeid, entry, itemid) {
+            spyOn(connection.PubSub, 'publish').and.callFake(function (nodeid, entry, itemid) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
                 expect(itemid).toEqual('foo');
@@ -100,11 +100,11 @@
             p.done(successHandler);
             p.fail(errorHandler);
             expect(successHandler).toHaveBeenCalledWith();
-            expect(errorHandler).wasNotCalled();
+            expect(errorHandler).not.toHaveBeenCalled();
         });
 
         it("returns the model's attributes that have changed on the node when an existing model is fetched and sync() is called with a 'read'", function () {
-            spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
+            spyOn(connection.PubSub, 'items').and.callFake(function (nodeid, options) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
                 expect(options.item_ids).toEqual(['foo']);
@@ -120,12 +120,12 @@
             p.done(successHandler);
             p.fail(errorHandler);
             expect(successHandler).toHaveBeenCalledWith({count: 3});
-            expect(errorHandler).wasNotCalled();
+            expect(errorHandler).not.toHaveBeenCalled();
         });
 
         it("returns the model's attributes that have changed on the node when an existing model is fetched and sync() is called with a 'read' using atom format", function () {
             node = new PubSubStorage('node', connection, 'atom');
-            spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
+            spyOn(connection.PubSub, 'items').and.callFake(function (nodeid, options) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
                 expect(options.item_ids).toEqual(['foo']);
@@ -141,11 +141,11 @@
             // TODO: Shouldn't the updated timestamp be changed and thus be in here too?
             // TODO: Count should be an int really...
             expect(successHandler).toHaveBeenCalledWith({count: 3});
-            expect(errorHandler).wasNotCalled();
+            expect(errorHandler).not.toHaveBeenCalled();
         });
 
         it("returns all models on the node when a collection is fetched and sync() is called with a 'read'", function () {
-            spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
+            spyOn(connection.PubSub, 'items').and.callFake(function (nodeid, options) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
                 response = [
@@ -166,11 +166,11 @@
             expect(successHandler).toHaveBeenCalledWith(
                 [{id: 'foo', content: 'Hello world', count: 3},
                 {id: 'bar', content: 'Bye bye world', count: 4}], undefined);
-            expect(errorHandler).wasNotCalled();
+            expect(errorHandler).not.toHaveBeenCalled();
         });
 
         it("also returns the Result Set Management info as an object literal if it is available", function () {
-            spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
+            spyOn(connection.PubSub, 'items').and.callFake(function (nodeid, options) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
                 response = {
@@ -199,7 +199,7 @@
 
         it("returns all models on the node when an atom formatted collection is fetched and sync() is called with a 'read'", function () {
             node = new PubSubStorage('node', connection, 'atom');
-            spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
+            spyOn(connection.PubSub, 'items').and.callFake(function (nodeid, options) {
                 var d = $.Deferred();
                 expect(nodeid).toEqual('node');
                 response = [
@@ -216,13 +216,13 @@
             p.fail(errorHandler);
 
             expect(successHandler).toHaveBeenCalledWith(
-                [{updated: '2012-07-19T14:02:07Z', content: 'Hello world', count: 3},
-                {updated: '2012-07-19T14:02:07Z', content: 'Bye bye world', count: 4}], undefined);
-            expect(errorHandler).wasNotCalled();
+                [{updated: '2012-07-19T14:02:07Z', content: 'Hello world', count: 3, id: undefined},
+                {updated: '2012-07-19T14:02:07Z', content: 'Bye bye world', count: 4, id: undefined}], undefined);
+            expect(errorHandler).not.toHaveBeenCalled();
         });
 
         it('retrieves only max_items items from the node when a fetch is called with options defining max_items', function () {
-            spyOn(connection.PubSub, 'items').andCallFake(function (nodeid, options) {
+            spyOn(connection.PubSub, 'items').and.callFake(function (nodeid, options) {
                 expect(options.max_items).toEqual(10);
                 var d = $.Deferred();
                 d.resolve([]);
@@ -234,7 +234,7 @@
         });
 
         it("deletes the model from the node when sync() is called with a 'delete' action", function () {
-            spyOn(connection.PubSub, 'deleteItem').andCallFake(function (nodeid, options) {
+            spyOn(connection.PubSub, 'deleteItem').and.callFake(function (nodeid, options) {
                 var d = $.Deferred();
                 d.resolve();
                 return d.promise();
@@ -245,7 +245,7 @@
             p.done(successHandler);
             p.fail(errorHandler);
             expect(successHandler).toHaveBeenCalled();
-            expect(errorHandler).wasNotCalled();
+            expect(errorHandler).not.toHaveBeenCalled();
         });
 
     });

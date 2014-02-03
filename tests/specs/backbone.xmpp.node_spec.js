@@ -63,7 +63,7 @@
         });
 
         it('adds an item to index 0 of the collection upon receiving an PEP notification on a non-existing item without a payload and fires the "add" event.', function () {
-            spyOn(connection.PubSub, 'items').andCallFake(function () {
+            spyOn(connection.PubSub, 'items').and.callFake(function () {
                 var d = $.Deferred(),
                     response = $build('item', {id: 'item_id'}).cnode(entry).tree();
                 d.resolve(response);
