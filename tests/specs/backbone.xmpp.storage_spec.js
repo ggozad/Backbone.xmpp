@@ -75,6 +75,7 @@
             model = new Model(json);
             model.node = node;
             model.id = 'foo';
+            model.isNew = function () { return false; };
             p = model.save();
             p.done(successHandler);
             p.fail(errorHandler);
@@ -96,6 +97,7 @@
             model = new Model(json);
             model.node = node;
             model.id = 'foo';
+            model.isNew = function () { return false; };
             p = model.save();
             p.done(successHandler);
             p.fail(errorHandler);

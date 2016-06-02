@@ -17,8 +17,8 @@
     "jquery": "",
     "underscore": "",
     "backbone": "",
-    "strophe": "",
-    "strophe.plugins": ""
+    "strophejs": "",
+    "strophe.plugins": "git@github.com:ggozad/strophe.plugins.git#CHORE-update-strophe"
   },
   "devDependencies": {
     "jasmine": ""
@@ -30,5 +30,8 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "resolutions": {
+    "jquery": "^2.2.4"
+  }
 }

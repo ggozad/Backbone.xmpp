@@ -11,15 +11,15 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['jquery', 'underscore', 'backbone', 'strophe', 'pubsubstorage'], function ($, _, Backbone, Strophe, PubSubStorage) {
-            return (root.PubSubNode = factory($, _, Backbone, Strophe, PubSubStorage));
+        define(['jquery', 'underscore', 'backbone', 'pubsubstorage'], function ($, _, Backbone, PubSubStorage) {
+            return (root.PubSubNode = factory($, _, Backbone, PubSubStorage));
         });
     } else {
         // Browser globals
-        root.PubSubNode = factory($, _, Backbone, Strophe, PubSubStorage);
+        root.PubSubNode = factory(root.$, root._, root.Backbone, root.PubSubStorage);
     }
 
-}(this, function ($, _, Backbone, Strophe, PubSubStorage) {
+}(this, function ($, _, Backbone, PubSubStorage) {
 
     var exports = {};
 
@@ -70,7 +70,7 @@
                 json;
 
             d.promise().done(function () {
-                existing = self.get(item.id),
+                existing = self.get(item.id);
                 json = self.node.parseItem(payload);
                 if (existing) {
                     self.remove(existing, {silent: true});
