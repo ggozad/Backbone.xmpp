@@ -1,6 +1,6 @@
 {
   "name": "Backbone.xmpp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/ggozad/Backbone.xmpp",
   "authors": [
     "Yiorgis Gozadinos <ggozad@crypho.com>"
@@ -14,11 +14,11 @@
     "storage"
   ],
   "dependencies": {
-    "jquery": "",
-    "underscore": "",
-    "backbone": "",
-    "strophejs": "",
-    "strophe.plugins": "git@github.com:ggozad/strophe.plugins.git#CHORE-update-strophe"
+    "jquery": "^2.2.4",
+    "underscore": "^1.8.3",
+    "backbone": "^1.3.3",
+    "strophejs": "^1.2.6",
+    "strophe.plugins": "^1.0.5"
   },
   "devDependencies": {
     "jasmine": ""
