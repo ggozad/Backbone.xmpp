@@ -3,7 +3,7 @@
     describe('PubSubItem/PubSubNode model/collection', function () {
 
         var connection, response, p, successHandler, errorHandler, json, entry,
-            item, items;
+            item, items, message;
 
         var Model = PubSubNode.PubSubItem.extend({
             }),

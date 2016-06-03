@@ -1,0 +1,9 @@
+{
+    "undef": true,
+    "strict": false,
+    "browser": true,
+    "debug": true,
+    "devel": true,
+    "jquery": false,
+    "predef": ["define", "require", "describe", "it", "spyOn", "beforeEach", "expect"]
+}

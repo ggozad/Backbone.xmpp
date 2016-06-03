@@ -11,15 +11,15 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
-        define(['jquery', 'underscore', 'backbone', 'strophe'], function ($, _, Backbone, Strophe) {
-            return (root.PubSubStorage = factory($, _, Backbone, Strophe));
+        define(['jquery', 'underscore', 'backbone', 'strophe'], function ($, _, Backbone, wrapper) {
+            return (root.PubSubStorage = factory($, _, Backbone, wrapper.$build));
         });
     } else {
         // Browser globals
-        root.PubSubStorage = factory($, _, Backbone, Strophe);
+        root.PubSubStorage = factory(root.$, root._, root.Backbone, root.$build);
     }
 
-}(this, function ($, _, Backbone, Strophe) {
+}(this, function ($, _, Backbone, $build) {
 
     // A PubSub node acting as storage.
     // Create it with the `id` the node has on the XMPP server,
@@ -131,7 +131,6 @@
 
         // If there is no node, fail directly, somebody did not read the docs.
         if (!node) return $.Deferred().reject().promise();
-
         switch (method) {
             case "read":    p = typeof model.id !== 'undefined' ? node.getItem(model) : node.getItems(options); break;
             case "create":  p = node.create(model); break;
