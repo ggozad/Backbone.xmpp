@@ -1,6 +1,6 @@
-//    Backbone XMPP PubSub Storage v1.0.1
+//    Backbone XMPP PubSub Storage v1.0.2
 
-//    (c) 2012-2013 Yiorgis Gozadinos.
+//    (c) 2012-2016 Yiorgis Gozadinos.
 //    Backbone.xmpp is distributed under the MIT license.
 //    http://github.com/ggozad/Backbone.xmpp
 
@@ -50,8 +50,8 @@
 
         setNode: function(id, connection, format) {
             if (this.node) {
-                connection.PubSub.off('xmpp:pubsub:item-published:' + this.node.id, this.onItemPublished, this);
-                connection.PubSub.off('xmpp:pubsub:item-deleted:' + this.node.id, this.onItemDeleted, this);
+                this.node.connection.PubSub.off('xmpp:pubsub:item-published:' + this.node.id, this.onItemPublished, this);
+                this.node.connection.PubSub.off('xmpp:pubsub:item-deleted:' + this.node.id, this.onItemDeleted, this);
             }
             this.node = new PubSubStorage(id, connection, format);
             connection.PubSub.on('xmpp:pubsub:item-published:' + id, this.onItemPublished, this);
